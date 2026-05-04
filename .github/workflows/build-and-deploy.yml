@@ -1,84 +1,123 @@
-name: Build and Deploy
+name: CI / Release / Deploy
 
 on:
-  push:
-    branches: [ "master" ]
-  pull_request:
+    push:
+        branches: [master]
+    pull_request:
+        branches: [master]
 
 permissions:
-  contents: read
+    contents: write
+    issues: write
+    pull-requests: write
 
 env:
-  cache-name: build-assets-cache
+    VERCEL_ORG_ID: ${{ secrets.VERCEL_ORG_ID }}
+    VERCEL_PROJECT_ID: ${{ secrets.VERCEL_PROJECT_ID }}
 
 jobs:
-  build:
-    runs-on: ubuntu-latest
+    lint:
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v4
+            - uses: actions/setup-node@v4
+              with:
+                  node-version: '22'
+                  cache: npm
+            - run: npm ci
+            - run: npm run lint
+            - run: npm run prettier:check
+            - run: npm audit --audit-level=high
 
-    permissions:
-      contents: write # to be able to publish a GitHub release
-      issues: write # to be able to comment on released issues
-      pull-requests: write # to be able to comment on released pull requests
-      id-token: write # to enable use of OIDC for npm provenance
+    deploy-preview:
+        if: github.event_name == 'pull_request'
+        needs: lint
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v4
+            - uses: actions/setup-node@v4
+              with:
+                  node-version: '22'
+            - run: npm ci
+            - name: Compute preview version
+              id: version
+              run: |
+                  VERSION=$(node -p "require('./package.json').version")
+                  SHORT_SHA=$(git rev-parse --short HEAD)
+                  PREVIEW_VERSION="${VERSION}-pr.${{ github.event.number }}.${SHORT_SHA}"
+                  echo "preview_version=${PREVIEW_VERSION}" >> $GITHUB_OUTPUT
+            - run: npm install -g vercel
+            - run: vercel pull --yes --environment=preview --token=${{ secrets.VERCEL_TOKEN }}
+            - name: Build with preview version
+              run: vercel build --token=${{ secrets.VERCEL_TOKEN }}
+              env:
+                  VITE_APP_VERSION: ${{ steps.version.outputs.preview_version }}
+            - name: Deploy Preview
+              id: deploy
+              run: echo "url=$(vercel deploy --prebuilt --token=${{ secrets.VERCEL_TOKEN }})" >> $GITHUB_OUTPUT
+            - name: Comment on PR
+              uses: actions/github-script@v7
+              with:
+                  script: |
+                      const url = '${{ steps.deploy.outputs.url }}'
+                      const version = '${{ steps.version.outputs.preview_version }}'
+                      const body = `**Preview Deployment**\n\nVersion: \`${version}\`\nURL: ${url}`
+                      const { data: comments } = await github.rest.issues.listComments({
+                        owner: context.repo.owner,
+                        repo: context.repo.repo,
+                        issue_number: context.issue.number,
+                      })
+                      const existing = comments.find(c => c.body.startsWith('**Preview Deployment**'))
+                      if (existing) {
+                        await github.rest.issues.updateComment({
+                          owner: context.repo.owner,
+                          repo: context.repo.repo,
+                          comment_id: existing.id,
+                          body,
+                        })
+                      } else {
+                        await github.rest.issues.createComment({
+                          owner: context.repo.owner,
+                          repo: context.repo.repo,
+                          issue_number: context.issue.number,
+                          body,
+                        })
+                      }
 
-    steps:
-    - name: Checkout
-      uses: actions/checkout@v3
+    release:
+        if: github.event_name == 'push' && github.ref == 'refs/heads/master'
+        needs: lint
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v4
+              with:
+                  fetch-depth: 0
+            - uses: actions/setup-node@v4
+              with:
+                  node-version: '22'
+                  cache: npm
+            - run: npm ci
+            - run: npx semantic-release
+              env:
+                  GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+                  HUSKY: 0
 
-    - name: Setup node
-      uses: actions/setup-node@v3
-      with:
-        node-version: 18.17.1
-        cache: 'npm'
-
-    - run: npm ci
-    - run: npm run lint
-    - run: npm run semantic-release
-      env:
-        GH_TOKEN: ${{ secrets.GH_TOKEN }}
-    - run: npm run build
-
-    - name: Cache assets
-      uses: actions/cache@v3
-      with:
-        path: |
-          build
-          terraform
-        key: ${{ env.cache-name }}-${{ github.sha }}
-
-  deploy:
-    runs-on: ubuntu-latest
-    needs: build
-    env:
-      AWS_ACCESS_KEY_ID: ${{ secrets.AWS_ACCESS_KEY_ID }}
-      AWS_SECRET_ACCESS_KEY: ${{ secrets.AWS_SECRET_ACCESS_KEY }}
-
-    steps:
-    - name: Restore assets
-      uses: actions/cache@v3
-      with:
-        path: |
-          build
-          terraform
-        key: ${{ env.cache-name }}-${{ github.sha }}
-
-    - name: Setup Terraform
-      uses: hashicorp/setup-terraform@v2
-      with:
-        terraform_version: 1.5.7
-
-    - name: Terraform Init
-      run: terraform init
-      working-directory: terraform
-
-    - name: Terraform Format
-      run: terraform fmt -check
-      working-directory: terraform
-
-    - name: Terraform Plan
-      run: terraform plan -out tfapply
-      working-directory: terraform
-
-    - name: Terraform Apply
-      run: terraform apply -auto-approve tfapply
-      working-directory: terraform
+    deploy-production:
+        if: github.event_name == 'push' && github.ref == 'refs/heads/master'
+        needs: release
+        runs-on: ubuntu-latest
+        steps:
+            - uses: actions/checkout@v4
+              with:
+                  ref: master
+            - run: git pull origin master
+            - uses: actions/setup-node@v4
+              with:
+                  node-version: '22'
+                  cache: npm
+            - run: npm ci
+            - run: npm run build
+            - run: npm install -g vercel
+            - run: vercel pull --yes --environment=production --token=${{ secrets.VERCEL_TOKEN }}
+            - run: vercel build --prod --token=${{ secrets.VERCEL_TOKEN }}
+            - run: vercel deploy --prebuilt --prod --token=${{ secrets.VERCEL_TOKEN }}

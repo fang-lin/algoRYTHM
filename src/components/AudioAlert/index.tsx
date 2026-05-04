@@ -1,12 +1,12 @@
 import React, {Dispatch, FunctionComponent, SetStateAction, useContext} from 'react';
 import {getRandomThemeKey, Theme} from '../Theme';
 import {AudioAlterButton, AudioAlertBackground, CoinTossButton, Head3} from './styles';
-import {useRouteMatch, useHistory, NavLink} from 'react-router-dom';
+import {useParams, useNavigate, NavLink} from 'react-router-dom';
 import {AudioButtonContext, Params} from '../Algorithms';
-import Music from '../../icons/music.svg';
-import CoinToss from '../../icons/coin-toss.svg';
+import Music from '../../icons/music.svg?react';
+import CoinToss from '../../icons/coin-toss.svg?react';
 import {getRandomAlgorithmKey, paramsToLink} from '../../functions';
-import {version} from '../../../package.json';
+declare const __APP_VERSION__: string;
 
 interface AudioAlertProps {
     theme: Theme;
@@ -14,13 +14,13 @@ interface AudioAlertProps {
 }
 
 const AudioAlert: FunctionComponent<AudioAlertProps> = ({theme, setFirstShowAudioAlert}) => {
-    const {params} = useRouteMatch<Params>();
-    const history = useHistory();
+    const params = useParams() as unknown as Params;
+    const navigate = useNavigate();
     const audioButton = useContext(AudioButtonContext);
     return audioButton ? <AudioAlertBackground {...theme}>
         <AudioAlterButton onClick={() => {
             audioButton.click();
-            history.push(paramsToLink({
+            navigate(paramsToLink({
                 ...params,
                 audioIsEnabledKey: '1'
             }));
@@ -39,7 +39,7 @@ const AudioAlert: FunctionComponent<AudioAlertProps> = ({theme, setFirstShowAudi
                 Toss
             </NavLink>
         </CoinTossButton>
-        <Head3 {...theme}>algoRYTHM {version}</Head3>
+        <Head3 {...theme}>algoRYTHM {__APP_VERSION__}</Head3>
     </AudioAlertBackground> : null;
 };
 

@@ -1,15 +1,15 @@
 import React, {Dispatch, FunctionComponent, SetStateAction, useEffect, useRef} from 'react';
-import Rabbit from '../../icons/rabbit.svg';
-import Turtle from '../../icons/turtle.svg';
-import Bear from '../../icons/bear.svg';
+import Rabbit from '../../icons/rabbit.svg?react';
+import Turtle from '../../icons/turtle.svg?react';
+import Bear from '../../icons/bear.svg?react';
 import {Raw, Item, OperationBarWrapper} from './styles';
 import {getRandomThemeKey, Theme} from '../Theme';
-import {NavLink, useRouteMatch} from 'react-router-dom';
+import {NavLink, useParams} from 'react-router-dom';
 import {AudioButtonElement, Params} from '../Algorithms';
-import Shuffle from '../../icons/shuffle.svg';
-import MusicOff from '../../icons/music-off.svg';
-import MusicOn from '../../icons/music-on.svg';
-import Palette from '../../icons/palette.svg';
+import Shuffle from '../../icons/shuffle.svg?react';
+import MusicOff from '../../icons/music-off.svg?react';
+import MusicOn from '../../icons/music-on.svg?react';
+import Palette from '../../icons/palette.svg?react';
 import {paramsToLink} from '../../functions';
 import {SpeedKey} from '../Algorithms';
 
@@ -20,7 +20,7 @@ interface SpeedBarProps {
 }
 
 const SettingBar: FunctionComponent<SpeedBarProps> = ({theme, triggerShuffle, setAudioButton}) => {
-    const {params} = useRouteMatch<Params>();
+    const params = useParams() as unknown as Params;
     const audioButton = useRef<HTMLAnchorElement>(null);
     const audioIsEnabledKey = params.audioIsEnabledKey === '1' ? '0' : '1';
 

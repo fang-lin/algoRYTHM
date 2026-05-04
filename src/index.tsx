@@ -1,6 +1,6 @@
-import {render} from 'react-dom';
+import {createRoot} from 'react-dom/client';
 import React from 'react';
-import {HashRouter, Redirect, Route, Switch} from 'react-router-dom';
+import {HashRouter, Navigate, Route, Routes} from 'react-router-dom';
 import Algorithms from './components/Algorithms';
 import injectFonts from './fonts';
 import {getRandomThemeKey} from './components/Theme';
@@ -11,17 +11,17 @@ import 'normalize.css/normalize.css';
 const dom = document.getElementById('root');
 
 if (dom) {
-    render(<HashRouter>
-        <Switch>
-            <Route path="/:themeKey/:algorithmKey/:speedKey/:audioIsEnabledKey"><Algorithms/></Route>
-            <Redirect to={paramsToLink({
+    createRoot(dom).render(<HashRouter>
+        <Routes>
+            <Route path="/:themeKey/:algorithmKey/:speedKey/:audioIsEnabledKey" element={<Algorithms/>}/>
+            <Route path="*" element={<Navigate to={paramsToLink({
                 themeKey: getRandomThemeKey(),
                 algorithmKey: getRandomAlgorithmKey(),
                 speedKey: '1',
                 audioIsEnabledKey: '1'
-            })}/>
-        </Switch>
-    </HashRouter>, dom);
+            })} replace/>}/>
+        </Routes>
+    </HashRouter>);
 }
 
 injectFonts();

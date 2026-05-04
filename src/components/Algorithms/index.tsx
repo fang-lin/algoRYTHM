@@ -1,5 +1,5 @@
 import React, {createContext, FunctionComponent, useEffect, useState} from 'react';
-import {useHistory, useRouteMatch} from 'react-router-dom';
+import {useNavigate, useParams} from 'react-router-dom';
 import algorithms, {AlgorithmKey} from './codes';
 import CodeArea from '../CodeArea';
 import CanvasTarget from '../Canvas';
@@ -31,9 +31,9 @@ export type AudioButtonElement = HTMLAnchorElement | null;
 export const AudioButtonContext = createContext<AudioButtonElement>(null);
 
 const Algorithms: FunctionComponent = () => {
-    const {params} = useRouteMatch<Params>();
+    const params = useParams() as unknown as Params;
     const {themeKey, algorithmKey, speedKey, audioIsEnabledKey} = params;
-    const {push} = useHistory();
+    const navigate = useNavigate();
     const [theme, applyTheme] = useState<Theme>(defaultTheme);
     const [shuffle, triggerShuffle] = useState<number>(0);
     const [firstShowAudioAlert, setFirstShowAudioAlert] = useState<boolean>(audioIsEnabledKey === '1');
@@ -41,8 +41,8 @@ const Algorithms: FunctionComponent = () => {
 
     useEffect(() => {
         if (!validParams(params))
-            push('/');
-    }, [params, push]);
+            navigate('/');
+    }, [params, navigate]);
 
     if (validParams(params)) {
         const {name, code, executor} = algorithms[algorithmKey];
