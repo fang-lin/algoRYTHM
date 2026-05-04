@@ -15,7 +15,7 @@ export const CodeMirrorStyle = createGlobalStyle`
 
 export const CodeWrapper = styled.div`
     .CodeMirror {
-      background: transparent !important;
+        background: transparent !important;
     }
 `;
 

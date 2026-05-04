@@ -19,10 +19,8 @@ function insertSort(list: Array<number>): void {
 }
 `;
 
-
 export const executor: Executor = (list, collector) => {
     function insertSort(list: Array<number>): void {
-
         let next, j;
         const length = list.length;
 
@@ -42,4 +40,3 @@ export const executor: Executor = (list, collector) => {
 
     insertSort(list);
 };
-

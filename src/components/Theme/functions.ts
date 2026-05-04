@@ -63,34 +63,75 @@ import 'codemirror/theme/zenburn.css';
 import random from 'lodash/random';
 
 export const ThemeKeys = [
-    '3024-day', '3024-night', 'abcdef',
-    'ambiance', 'ayu-dark',
-    'ayu-mirage', 'base16-dark', 'base16-light',
-    'bespin', 'blackboard', 'cobalt',
-    'colorforth', 'darcula', 'dracula',
-    'duotone-dark', 'duotone-light', 'eclipse',
-    'elegant', 'erlang-dark', 'gruvbox-dark',
-    'hopscotch', 'icecoder', 'idea',
-    'isotope', 'lesser-dark', 'liquibyte',
-    'lucario', 'material', 'material-darker',
-    'material-ocean', 'material-palenight', 'mbo',
-    'mdn-like', 'midnight', 'monokai',
-    'moxer', 'neat', 'neo',
-    'night', 'nord', 'oceanic-next',
-    'panda-syntax', 'paraiso-dark', 'paraiso-light',
-    'pastel-on-dark', 'railscasts', 'rubyblue',
-    'seti', 'shadowfox', 'solarized',
-    'ssms', 'the-matrix', 'tomorrow-night-bright',
-    'tomorrow-night-eighties', 'ttcn', 'twilight',
-    'vibrant-ink', 'xq-dark', 'xq-light',
-    'yeti', 'yonce', 'zenburn',
+    '3024-day',
+    '3024-night',
+    'abcdef',
+    'ambiance',
+    'ayu-dark',
+    'ayu-mirage',
+    'base16-dark',
+    'base16-light',
+    'bespin',
+    'blackboard',
+    'cobalt',
+    'colorforth',
+    'darcula',
+    'dracula',
+    'duotone-dark',
+    'duotone-light',
+    'eclipse',
+    'elegant',
+    'erlang-dark',
+    'gruvbox-dark',
+    'hopscotch',
+    'icecoder',
+    'idea',
+    'isotope',
+    'lesser-dark',
+    'liquibyte',
+    'lucario',
+    'material',
+    'material-darker',
+    'material-ocean',
+    'material-palenight',
+    'mbo',
+    'mdn-like',
+    'midnight',
+    'monokai',
+    'moxer',
+    'neat',
+    'neo',
+    'night',
+    'nord',
+    'oceanic-next',
+    'panda-syntax',
+    'paraiso-dark',
+    'paraiso-light',
+    'pastel-on-dark',
+    'railscasts',
+    'rubyblue',
+    'seti',
+    'shadowfox',
+    'solarized',
+    'ssms',
+    'the-matrix',
+    'tomorrow-night-bright',
+    'tomorrow-night-eighties',
+    'ttcn',
+    'twilight',
+    'vibrant-ink',
+    'xq-dark',
+    'xq-light',
+    'yeti',
+    'yonce',
+    'zenburn',
 ] as const;
 
 export function getRandomThemeKey(): ThemeKey {
     return ThemeKeys[random(0, ThemeKeys.length - 1)];
 }
 
-export type ThemeKey = typeof ThemeKeys[number];
+export type ThemeKey = (typeof ThemeKeys)[number];
 
 export interface Theme {
     backgroundColor: string;
@@ -111,7 +152,7 @@ export const defaultTheme: Theme = {
     operatorColor: 'black',
     numberColor: 'black',
     codeColor: 'black',
-    themeKey: 'unknown'
+    themeKey: 'unknown',
 };
 
 export function queryTheme(element: HTMLDivElement, themeKey: ThemeKey): Theme {
@@ -122,34 +163,27 @@ export function queryTheme(element: HTMLDivElement, themeKey: ThemeKey): Theme {
         defColor,
         operatorColor,
         numberColor,
-        codeColor
+        codeColor,
     } = defaultTheme;
 
     const cmDom = element.querySelector('.CodeMirror');
 
     if (cmDom) {
         const exec = /rgb\([\d\s,]+\)/i.exec(getComputedStyle(cmDom).background);
-        if (exec && exec[0])
-            backgroundColor = exec[0];
+        if (exec && exec[0]) backgroundColor = exec[0];
     }
     const cmKeywordDom = element.querySelector('.cm-keyword');
-    if (cmKeywordDom)
-        keywordColor = getComputedStyle(cmKeywordDom).color;
+    if (cmKeywordDom) keywordColor = getComputedStyle(cmKeywordDom).color;
     const cmVariableDom = element.querySelector('.cm-variable');
-    if (cmVariableDom)
-        variableColor = getComputedStyle(cmVariableDom).color;
+    if (cmVariableDom) variableColor = getComputedStyle(cmVariableDom).color;
     const cmDefDom = element.querySelector('.cm-def');
-    if (cmDefDom)
-        defColor = getComputedStyle(cmDefDom).color;
+    if (cmDefDom) defColor = getComputedStyle(cmDefDom).color;
     const cmOperatorDom = element.querySelector('.cm-operator');
-    if (cmOperatorDom)
-        operatorColor = getComputedStyle(cmOperatorDom).color;
+    if (cmOperatorDom) operatorColor = getComputedStyle(cmOperatorDom).color;
     const cmNumberDom = element.querySelector('.cm-number');
-    if (cmNumberDom)
-        numberColor = getComputedStyle(cmNumberDom).color;
+    if (cmNumberDom) numberColor = getComputedStyle(cmNumberDom).color;
     const cmColorDom = element.querySelector('.CodeMirror-line ');
-    if (cmColorDom)
-        codeColor = getComputedStyle(cmColorDom).color;
+    if (cmColorDom) codeColor = getComputedStyle(cmColorDom).color;
 
     return {
         backgroundColor,
@@ -159,6 +193,6 @@ export function queryTheme(element: HTMLDivElement, themeKey: ThemeKey): Theme {
         operatorColor,
         numberColor,
         codeColor,
-        themeKey
+        themeKey,
     };
 }

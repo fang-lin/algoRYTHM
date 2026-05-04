@@ -8,7 +8,7 @@ import {CodeMirrorStyle, CodeWrapper, ThemeWrapper} from './styles';
 import {queryTheme, Theme, ThemeKey} from '../Theme';
 
 interface CodeAreaProps {
-    code: string
+    code: string;
     themeKey: ThemeKey;
     applyTheme: (theme: Theme) => void;
 }
@@ -32,7 +32,7 @@ const CodeAreaFn: FunctionComponent<CodeAreaProps> = ({themeKey, code, applyThem
                     mode: 'text/typescript',
                     theme: themeKey,
                     matchBrackets: true,
-                    lineWrapping: true
+                    lineWrapping: true,
                 });
                 _codemirror_.setSize('null', 'auto');
                 setCodeMirror(_codemirror_);
@@ -57,11 +57,13 @@ const CodeAreaFn: FunctionComponent<CodeAreaProps> = ({themeKey, code, applyThem
         }
     }, [applyTheme, themeKey, code, themeMirror, codeMirror]);
 
-    return <>
-        <CodeMirrorStyle/>
-        <CodeWrapper ref={codeRef}/>
-        <ThemeWrapper ref={themeRef}/>
-    </>;
+    return (
+        <>
+            <CodeMirrorStyle />
+            <CodeWrapper ref={codeRef} />
+            <ThemeWrapper ref={themeRef} />
+        </>
+    );
 };
 
 export default CodeAreaFn;

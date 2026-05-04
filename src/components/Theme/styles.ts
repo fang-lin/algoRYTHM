@@ -7,8 +7,8 @@ export const List = styled.ul<Theme>`
     padding: 0;
     margin: -3px;
     width: unset;
-    @media ${device.laptop} {  
-       width: 180px;
+    @media ${device.laptop} {
+        width: 180px;
     }
 `;
 export const ListItem = styled.li<Theme>`
@@ -16,14 +16,14 @@ export const ListItem = styled.li<Theme>`
     margin: 3px;
     font-size: 12px;
     a {
-      text-decoration: none;
-      color: ${({codeColor}) => codeColor};
-      :hover {
-        text-decoration: underline;
-      }
-      &.active{
-        color: ${({operatorColor}) => operatorColor};
-        text-decoration: underline;
-      }
+        text-decoration: none;
+        color: ${({codeColor}) => codeColor};
+        :hover {
+            text-decoration: underline;
+        }
+        &.active {
+            color: ${({operatorColor}) => operatorColor};
+            text-decoration: underline;
+        }
     }
 `;

@@ -31,9 +31,7 @@ function binaryInsertSort(list: Array<number>): void {
 `;
 
 export const executor: Executor = (list, collector) => {
-
     function binaryInsertSort(list: Array<number>): void {
-
         const length = list.length;
         let i, j, tmp, low, high, mid;
 
@@ -43,16 +41,13 @@ export const executor: Executor = (list, collector) => {
             high = i;
 
             while (low <= high) {
-                mid = (low + high) / 2 | 0;
+                mid = ((low + high) / 2) | 0;
                 collector({list, comparing: [i, mid]});
-                if (tmp < list[mid])
-                    high = mid - 1;
-                else
-                    low = mid + 1;
+                if (tmp < list[mid]) high = mid - 1;
+                else low = mid + 1;
             }
 
-            for (j = i - 1; j > high; j--)
-                list[j + 1] = list[j];
+            for (j = i - 1; j > high; j--) list[j + 1] = list[j];
 
             list[j + 1] = tmp;
             collector({list, swap: [j + 1]});

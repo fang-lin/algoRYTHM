@@ -47,14 +47,16 @@ const HomeLink = styled(Link)`
 `;
 
 const NotFound: FunctionComponent = () => {
-    return <>
-        <GlobalStyle/>
-        <Wrapper>
-            <Code>404</Code>
-            <Message>Page not found</Message>
-            <HomeLink to="/">Back to Home</HomeLink>
-        </Wrapper>
-    </>;
+    return (
+        <>
+            <GlobalStyle />
+            <Wrapper>
+                <Code>404</Code>
+                <Message>Page not found</Message>
+                <HomeLink to="/">Back to Home</HomeLink>
+            </Wrapper>
+        </>
+    );
 };
 
 export default NotFound;

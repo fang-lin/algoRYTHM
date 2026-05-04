@@ -1,76 +1,76 @@
 {
-  "name": "sorting-animation",
-  "version": "2.10.5",
-  "description": "sorting algorithm animation",
-  "author": "Lin fang",
-  "license": "MIT",
-  "private": true,
-  "type": "module",
-  "scripts": {
-    "dev": "vite",
-    "build": "tsc --noEmit && vite build",
-    "preview": "vite preview",
-    "lint": "eslint src --ext .ts,.tsx",
-    "prettier": "prettier --write .",
-    "prettier:check": "prettier --check .",
-    "prepare": "husky install",
-    "semantic-release": "semantic-release"
-  },
-  "repository": {
-    "type": "git",
-    "url": "https://github.com/fang-lin/sorting-animation.git"
-  },
-  "engines": {
-    "npm": ">=10.0.0",
-    "node": ">=22.0.0"
-  },
-  "dependencies": {
-    "codemirror": "^5.58.2",
-    "lodash": "^4.17.20",
-    "normalize.css": "^8.0.1",
-    "react": "^18.3.1",
-    "react-dom": "^18.3.1",
-    "react-router-dom": "^7.14.2",
-    "styled-components": "^5.3.3",
-    "ua-parser-js": "^1.0.32"
-  },
-  "devDependencies": {
-    "@commitlint/cli": "^20.5.3",
-    "@commitlint/config-conventional": "^20.5.3",
-    "@semantic-release/git": "^10.0.1",
-    "@semantic-release/github": "^12.0.6",
-    "@types/codemirror": "0.0.98",
-    "@types/css-font-loading-module": "0.0.4",
-    "@types/lodash": "^4.14.162",
-    "@types/react": "^18.3.28",
-    "@types/react-dom": "^18.3.7",
-    "@types/styled-components": "^5.1.19",
-    "@types/ua-parser-js": "^0.7.36",
-    "@typescript-eslint/eslint-plugin": "^5.46.1",
-    "@typescript-eslint/parser": "^5.46.1",
-    "@vitejs/plugin-react": "^4.3.0",
-    "conventional-changelog-conventionalcommits": "^9.3.1",
-    "eslint": "^8.29.0",
-    "eslint-plugin-react": "^7.31.11",
-    "eslint-plugin-react-hooks": "^4.6.0",
-    "husky": "^8.0.3",
-    "prettier": "^3.8.3",
-    "semantic-release": "^25.0.3",
-    "typescript": "^5.5.0",
-    "vite": "^6.0.0",
-    "vite-plugin-svgr": "^4.3.0"
-  },
-  "release": {
-    "branches": [
-      "master"
-    ],
-    "plugins": [
-      "@semantic-release/commit-analyzer",
-      "@semantic-release/release-notes-generator",
-      "@semantic-release/npm",
-      "@semantic-release/git",
-      "@semantic-release/github"
-    ],
-    "preset": "conventionalcommits"
-  }
+    "name": "sorting-animation",
+    "version": "2.10.5",
+    "description": "sorting algorithm animation",
+    "author": "Lin fang",
+    "license": "MIT",
+    "private": true,
+    "type": "module",
+    "scripts": {
+        "dev": "vite",
+        "build": "tsc --noEmit && vite build",
+        "preview": "vite preview",
+        "lint": "eslint src --ext .ts,.tsx",
+        "prettier": "prettier --write .",
+        "prettier:check": "prettier --check .",
+        "prepare": "husky install",
+        "semantic-release": "semantic-release"
+    },
+    "repository": {
+        "type": "git",
+        "url": "https://github.com/fang-lin/sorting-animation.git"
+    },
+    "engines": {
+        "npm": ">=10.0.0",
+        "node": ">=22.0.0"
+    },
+    "dependencies": {
+        "codemirror": "^5.58.2",
+        "lodash": "^4.17.20",
+        "normalize.css": "^8.0.1",
+        "react": "^18.3.1",
+        "react-dom": "^18.3.1",
+        "react-router-dom": "^7.14.2",
+        "styled-components": "^5.3.3",
+        "ua-parser-js": "^1.0.32"
+    },
+    "devDependencies": {
+        "@commitlint/cli": "^20.5.3",
+        "@commitlint/config-conventional": "^20.5.3",
+        "@semantic-release/git": "^10.0.1",
+        "@semantic-release/github": "^12.0.6",
+        "@types/codemirror": "0.0.98",
+        "@types/css-font-loading-module": "0.0.4",
+        "@types/lodash": "^4.14.162",
+        "@types/react": "^18.3.28",
+        "@types/react-dom": "^18.3.7",
+        "@types/styled-components": "^5.1.19",
+        "@types/ua-parser-js": "^0.7.36",
+        "@typescript-eslint/eslint-plugin": "^5.46.1",
+        "@typescript-eslint/parser": "^5.46.1",
+        "@vitejs/plugin-react": "^4.3.0",
+        "conventional-changelog-conventionalcommits": "^9.3.1",
+        "eslint": "^8.29.0",
+        "eslint-plugin-react": "^7.31.11",
+        "eslint-plugin-react-hooks": "^4.6.0",
+        "husky": "^8.0.3",
+        "prettier": "^3.8.3",
+        "semantic-release": "^25.0.3",
+        "typescript": "^5.5.0",
+        "vite": "^6.0.0",
+        "vite-plugin-svgr": "^4.3.0"
+    },
+    "release": {
+        "branches": [
+            "master"
+        ],
+        "plugins": [
+            "@semantic-release/commit-analyzer",
+            "@semantic-release/release-notes-generator",
+            "@semantic-release/npm",
+            "@semantic-release/git",
+            "@semantic-release/github"
+        ],
+        "preset": "conventionalcommits"
+    }
 }

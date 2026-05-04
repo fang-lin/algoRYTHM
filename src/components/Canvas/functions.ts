@@ -8,7 +8,9 @@ export type Size = [number, number];
 
 function collectFrames(disorderedList: Array<number>, executor: Executor): Array<Frame> {
     const frames: Array<Frame> = [];
-    executor(disorderedList, (_) => frames.push({list: [..._.list], comparing: _.comparing, swap: _.swap}));
+    executor(disorderedList, _ =>
+        frames.push({list: [..._.list], comparing: _.comparing, swap: _.swap})
+    );
     return frames;
 }
 
@@ -60,9 +62,9 @@ export class AnimationPlayer {
             this.context.clearRect(0, 0, this._size[0], this._size[1]);
             frame.list.forEach((value, i) => {
                 if (frame.swap?.includes(i)) {
-                    this.context.fillStyle = rgba(keywordColor, .3);
+                    this.context.fillStyle = rgba(keywordColor, 0.3);
                 } else if (frame.comparing?.includes(i)) {
-                    this.context.fillStyle = rgba(variableColor, .3);
+                    this.context.fillStyle = rgba(variableColor, 0.3);
                 } else {
                     this.context.fillStyle = rgba(defColor);
                 }
@@ -130,10 +132,14 @@ class GainedOscillator {
         this.oscillator.type = type;
         this.gain.connect(audioContext.destination);
         this.oscillator.connect(this.gain);
-        this.gain.gain.setValueAtTime(.0000001, audioContext.currentTime);
-        audioButton.addEventListener('click', () => {
-            this.oscillator.start();
-        }, {once: true});
+        this.gain.gain.setValueAtTime(0.0000001, audioContext.currentTime);
+        audioButton.addEventListener(
+            'click',
+            () => {
+                this.oscillator.start();
+            },
+            {once: true}
+        );
     }
 }
 
@@ -148,11 +154,11 @@ export class AudioPlayer {
         this.audioContext = new AudioContext();
         this.swapGainedOscillators = [
             new GainedOscillator('square', this.audioContext, audioButton),
-            new GainedOscillator('square', this.audioContext, audioButton)
+            new GainedOscillator('square', this.audioContext, audioButton),
         ];
         this.comparingGainedOscillators = [
             new GainedOscillator('sine', this.audioContext, audioButton),
-            new GainedOscillator('sine', this.audioContext, audioButton)
+            new GainedOscillator('sine', this.audioContext, audioButton),
         ];
     }
 
@@ -166,35 +172,58 @@ export class AudioPlayer {
 
     fresh(frame: Frame, duration: number, barCount: number): void {
         if (this.isEnabled) {
-            const timeSlice = duration < 100 ? .1 : .6;
+            const timeSlice = duration < 100 ? 0.1 : 0.6;
             if (frame.swap) {
-                frame.swap.forEach((swap, index) => this.beep(
-                    this.swapGainedOscillators[index],
-                    AudioPlayer.frequency(swap, barCount),
-                    index * timeSlice,
-                    (index + 1) * timeSlice,
-                    .1
-                ));
+                frame.swap.forEach((swap, index) =>
+                    this.beep(
+                        this.swapGainedOscillators[index],
+                        AudioPlayer.frequency(swap, barCount),
+                        index * timeSlice,
+                        (index + 1) * timeSlice,
+                        0.1
+                    )
+                );
             } else if (frame.comparing) {
-                frame.comparing.forEach((comparing, index) => this.beep(
-                    this.comparingGainedOscillators[index],
-                    AudioPlayer.frequency(comparing, barCount),
-                    index * timeSlice,
-                    (index + 1) * timeSlice,
-                    .03
-                ));
+                frame.comparing.forEach((comparing, index) =>
+                    this.beep(
+                        this.comparingGainedOscillators[index],
+                        AudioPlayer.frequency(comparing, barCount),
+                        index * timeSlice,
+                        (index + 1) * timeSlice,
+                        0.03
+                    )
+                );
             }
         } else {
-            this.swapGainedOscillators.forEach(o => o.gain.gain.setValueAtTime(.0000001, this.audioContext.currentTime));
-            this.comparingGainedOscillators.forEach(o => o.gain.gain.setValueAtTime(.0000001, this.audioContext.currentTime));
+            this.swapGainedOscillators.forEach(o =>
+                o.gain.gain.setValueAtTime(0.0000001, this.audioContext.currentTime)
+            );
+            this.comparingGainedOscillators.forEach(o =>
+                o.gain.gain.setValueAtTime(0.0000001, this.audioContext.currentTime)
+            );
         }
     }
 
-    private beep(gainedOscillator: GainedOscillator, frequency: number, startTime: number, stopTime: number, gainValue: number): void {
+    private beep(
+        gainedOscillator: GainedOscillator,
+        frequency: number,
+        startTime: number,
+        stopTime: number,
+        gainValue: number
+    ): void {
         if (gainedOscillator) {
-            gainedOscillator.oscillator.frequency.setValueAtTime(frequency, this.audioContext.currentTime);
-            gainedOscillator.gain.gain.setValueAtTime(gainValue, this.audioContext.currentTime + startTime);
-            gainedOscillator.gain.gain.exponentialRampToValueAtTime(0.00001, this.audioContext.currentTime + stopTime);
+            gainedOscillator.oscillator.frequency.setValueAtTime(
+                frequency,
+                this.audioContext.currentTime
+            );
+            gainedOscillator.gain.gain.setValueAtTime(
+                gainValue,
+                this.audioContext.currentTime + startTime
+            );
+            gainedOscillator.gain.gain.exponentialRampToValueAtTime(
+                0.00001,
+                this.audioContext.currentTime + stopTime
+            );
         }
     }
 }
