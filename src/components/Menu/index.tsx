@@ -1,5 +1,5 @@
 import React, {FunctionComponent} from 'react';
-import {NavLink, useRouteMatch} from 'react-router-dom';
+import {NavLink, useParams} from 'react-router-dom';
 import algorithms, {AlgorithmKey} from '../Algorithms/codes';
 import {Params} from '../Algorithms';
 import {Theme} from '../Theme';
@@ -8,7 +8,7 @@ import {List, ListItem} from './styles';
 import {paramsToLink} from '../../functions';
 
 const Menu: FunctionComponent<Theme> = (theme) => {
-    const {params} = useRouteMatch<Params>();
+    const params = useParams() as unknown as Params;
     return <List {...theme}>
         {map(algorithms, ({name}, key) =>
             <ListItem {...theme} key={key}><NavLink
