@@ -31,10 +31,9 @@ export const AudioAlterButton = styled.h2<Theme>`
   font-size: 64px;
   font-weight: bold;
   margin: 0;
-  color: ${({keywordColor}) => keywordColor};
   transition: background 1s;
-  
-  :active {
+
+  &:active {
     border-color: ${({keywordColor}) => keywordColor};
   }
 
@@ -64,7 +63,7 @@ export const CoinTossButton = styled.h3<Theme>`
     padding: 4px 10px 4px 4px;
     transition: background 1s;
     
-    :active {
+    &:active {
       border-color: ${({keywordColor}) => keywordColor};
     }
 

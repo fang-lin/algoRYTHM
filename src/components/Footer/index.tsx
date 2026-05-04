@@ -1,11 +1,10 @@
-import React, {FunctionComponent} from 'react';
+import {FunctionComponent} from 'react';
 import {Theme} from '../Theme';
 import {FooterWrapper} from './styles';
-import {version} from '../../../package.json';
 
 const Footer: FunctionComponent<Theme> = (theme) => {
     return <FooterWrapper {...theme}>
-        <a href="/">algoRYTHM {version}</a>
+        <a href="/">algoRYTHM {__APP_VERSION__}</a>
         &nbsp;|&nbsp;
         <a href="https://github.com/fang-lin/sorting-animation" target="_blank"
             rel="noopener noreferrer">GitHub</a>

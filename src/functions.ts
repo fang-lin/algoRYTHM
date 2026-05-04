@@ -13,6 +13,10 @@ export function paramsToLink({themeKey, algorithmKey, speedKey, audioIsEnabledKe
 
 export const deviceRatio: number = ((): number => window.devicePixelRatio || 1)();
 
-export function rgba(rgb: string, alpha = .2): string {
-    return rgb.replace('rgb', 'rgba').replace(')', `, ${alpha})`);
+export function rgba(color: string, alpha = .2): string {
+    const match = color.match(/^rgba?\((\d+),\s*(\d+),\s*(\d+)/);
+    if (match) {
+        return `rgba(${match[1]}, ${match[2]}, ${match[3]}, ${alpha})`;
+    }
+    return color;
 }

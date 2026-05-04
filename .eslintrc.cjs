@@ -10,16 +10,13 @@ module.exports = {
         'plugin:@typescript-eslint/recommended',
         'plugin:react/recommended',
     ],
-    'globals': {
-        'Atomics': 'readonly',
-        'SharedArrayBuffer': 'readonly'
-    },
+    'globals': {},
     'parser': '@typescript-eslint/parser',
     'parserOptions': {
         'ecmaFeatures': {
             'jsx': true
         },
-        'ecmaVersion': 2018,
+        'ecmaVersion': 2020,
         'sourceType': 'module'
     },
     'plugins': [
@@ -31,6 +28,7 @@ module.exports = {
         'react-hooks/rules-of-hooks': 'error',
         'react-hooks/exhaustive-deps': 'warn',
         'react/prop-types': 'off',
+        'react/react-in-jsx-scope': 'off',
         'indent': [
             'error',
             4

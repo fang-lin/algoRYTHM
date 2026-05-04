@@ -13,13 +13,15 @@ export const Raw = styled.div`
 `;
 
 export const Item = styled.div<Theme>`
-  a {
+  a, button {
     margin: 0 5px;
     cursor: pointer;
     display: block;
     border-radius: 29px;
     border: solid 3px transparent;
     padding: 10px;
+    background: none;
+    font: inherit;
 
     svg {
       display: block;
@@ -32,11 +34,11 @@ export const Item = styled.div<Theme>`
       background: ${({defColor}) => defColor};
     }
 
-    :hover {
+    &:hover {
       border-color: ${({keywordColor}) => keywordColor};
     }
 
-    :active {
+    &:active {
       border-color: ${({defColor}) => defColor};
     }
   }

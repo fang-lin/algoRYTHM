@@ -1,5 +1,4 @@
 import {createRoot} from 'react-dom/client';
-import React from 'react';
 import {HashRouter, Navigate, Route, Routes} from 'react-router-dom';
 import Algorithms from './components/Algorithms';
 import injectFonts from './fonts';

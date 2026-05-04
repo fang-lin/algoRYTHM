@@ -1,12 +1,12 @@
-import React, {Dispatch, FunctionComponent, SetStateAction, useContext} from 'react';
+import {Dispatch, FunctionComponent, SetStateAction, useContext} from 'react';
 import {getRandomThemeKey, Theme} from '../Theme';
 import {AudioAlterButton, AudioAlertBackground, CoinTossButton, Head3} from './styles';
-import {useParams, useNavigate, NavLink} from 'react-router-dom';
-import {AudioButtonContext, Params} from '../Algorithms';
+import {useNavigate, NavLink} from 'react-router-dom';
+import {AudioButtonContext} from '../Algorithms';
+import {useTypedParams} from '../../hooks/useTypedParams';
 import Music from '../../icons/music.svg?react';
 import CoinToss from '../../icons/coin-toss.svg?react';
 import {getRandomAlgorithmKey, paramsToLink} from '../../functions';
-declare const __APP_VERSION__: string;
 
 interface AudioAlertProps {
     theme: Theme;
@@ -14,7 +14,7 @@ interface AudioAlertProps {
 }
 
 const AudioAlert: FunctionComponent<AudioAlertProps> = ({theme, setFirstShowAudioAlert}) => {
-    const params = useParams() as unknown as Params;
+    const params = useTypedParams();
     const navigate = useNavigate();
     const audioButton = useContext(AudioButtonContext);
     return audioButton ? <AudioAlertBackground {...theme}>

@@ -1,4 +1,4 @@
-import React, {FunctionComponent, useEffect, useState, useRef} from 'react';
+import {FunctionComponent, useEffect, useState, useRef} from 'react';
 import Codemirror, {Editor} from 'codemirror';
 import trim from 'lodash/trim';
 import 'codemirror/lib/codemirror.css';

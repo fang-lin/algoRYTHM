@@ -1,10 +1,10 @@
-import React, {FunctionComponent, useContext, useEffect, useRef, useState} from 'react';
+import {FunctionComponent, useContext, useEffect, useRef, useState} from 'react';
 import {Theme} from '../Theme';
 import {CanvasStage, CanvasWrapper} from './styles';
 import {Executor} from '../Algorithms/codes';
 import {AnimationPlayer, Size, AudioPlayer} from './functions';
-import {useParams} from 'react-router-dom';
-import {AudioButtonContext, Params} from '../Algorithms';
+import {AudioButtonContext} from '../Algorithms';
+import {useTypedParams} from '../../hooks/useTypedParams';
 import {deviceRatio} from '../../functions';
 
 interface CanvasProps {
@@ -15,11 +15,11 @@ interface CanvasProps {
 }
 
 const Canvas: FunctionComponent<CanvasProps> = ({theme, speed, executor, shuffle}) => {
-    const {audioIsEnabledKey} = useParams() as unknown as Params;
+    const {audioIsEnabledKey} = useTypedParams();
     const canvasRef = useRef<HTMLCanvasElement>(null);
     const [size, setSize] = useState<Size>([0, 0]);
-    const [animationPlayer, setAnimationPlayer] = useState<AnimationPlayer>();
-    const [autoPlayer, setAutoPlayer] = useState<AudioPlayer>();
+    const animationPlayerRef = useRef<AnimationPlayer>();
+    const audioPlayerRef = useRef<AudioPlayer>();
     const audioButton = useContext(AudioButtonContext);
 
     useEffect(() => {
@@ -33,41 +33,45 @@ const Canvas: FunctionComponent<CanvasProps> = ({theme, speed, executor, shuffle
 
                 _animationPlayer.size = [width * deviceRatio, height * deviceRatio];
 
-                setAnimationPlayer(_animationPlayer);
-                setAutoPlayer(_audioPlayer);
+                animationPlayerRef.current = _animationPlayer;
+                audioPlayerRef.current = _audioPlayer;
             }
         }
-    }, [canvasRef, audioButton]);
+        return () => {
+            animationPlayerRef.current?.destroy();
+            audioPlayerRef.current?.dispose();
+        };
+    }, [audioButton]);
 
     useEffect(() => {
-        if (animationPlayer) {
-            animationPlayer.theme = theme;
+        if (animationPlayerRef.current) {
+            animationPlayerRef.current.theme = theme;
         }
-    }, [animationPlayer, theme]);
+    }, [theme]);
 
     useEffect(() => {
-        if (animationPlayer) {
-            animationPlayer.executor = executor;
+        if (animationPlayerRef.current) {
+            animationPlayerRef.current.executor = executor;
         }
-    }, [animationPlayer, executor]);
+    }, [executor]);
 
     useEffect(() => {
-        if (animationPlayer) {
-            animationPlayer.speed = speed;
+        if (animationPlayerRef.current) {
+            animationPlayerRef.current.speed = speed;
         }
-    }, [animationPlayer, speed]);
+    }, [speed]);
 
     useEffect(() => {
-        if (animationPlayer) {
-            animationPlayer.replay();
+        if (animationPlayerRef.current) {
+            animationPlayerRef.current.replay();
         }
-    }, [animationPlayer, shuffle]);
+    }, [shuffle]);
 
     useEffect(() => {
-        if (autoPlayer) {
-            autoPlayer.isEnabled = !!parseInt(audioIsEnabledKey);
+        if (audioPlayerRef.current) {
+            audioPlayerRef.current.isEnabled = !!parseInt(audioIsEnabledKey);
         }
-    }, [autoPlayer, audioIsEnabledKey]);
+    }, [audioIsEnabledKey]);
 
     return <CanvasWrapper>
         <CanvasStage ref={canvasRef} width={size[0]} height={size[1]}/>
