@@ -30,7 +30,7 @@ export const ListItem = styled.li<Theme>`
         padding: 20px 30px;
         display: inline-block;
       }
-      :hover {
+      &:hover {
         text-decoration: underline;
       }
       &.active {

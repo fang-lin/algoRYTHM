@@ -1,12 +1,12 @@
-import React, {FunctionComponent} from 'react';
-import {NavLink, useParams} from 'react-router-dom';
-import {Params} from '../Algorithms';
+import {FunctionComponent} from 'react';
+import {NavLink} from 'react-router-dom';
 import {Theme, ThemeKeys} from '../Theme';
+import {useTypedParams} from '../../hooks/useTypedParams';
 import {List, ListItem} from './styles';
 import {paramsToLink} from '../../functions';
 
 const ThemeBar: FunctionComponent<Theme> = (theme) => {
-    const params = useParams() as unknown as Params;
+    const params = useTypedParams();
     return <div>
         <List {...theme}>{
             ThemeKeys.map((themeKey, key) =>

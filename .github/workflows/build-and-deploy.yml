@@ -38,6 +38,7 @@ jobs:
             - uses: actions/setup-node@v4
               with:
                   node-version: '22'
+                  cache: npm
             - run: npm ci
             - name: Compute preview version
               id: version
@@ -110,13 +111,13 @@ jobs:
             - uses: actions/checkout@v4
               with:
                   ref: master
+                  fetch-depth: 0
             - run: git pull origin master
             - uses: actions/setup-node@v4
               with:
                   node-version: '22'
                   cache: npm
             - run: npm ci
-            - run: npm run build
             - run: npm install -g vercel
             - run: vercel pull --yes --environment=production --token=${{ secrets.VERCEL_TOKEN }}
             - run: vercel build --prod --token=${{ secrets.VERCEL_TOKEN }}

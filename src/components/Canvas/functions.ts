@@ -8,7 +8,7 @@ export type Size = [number, number];
 
 function collectFrames(disorderedList: Array<number>, executor: Executor): Array<Frame> {
     const frames: Array<Frame> = [];
-    executor(disorderedList, (_) => frames.push(JSON.parse(JSON.stringify(_))));
+    executor(disorderedList, (_) => frames.push({list: [..._.list], comparing: _.comparing, swap: _.swap}));
     return frames;
 }
 
@@ -103,6 +103,11 @@ export class AnimationPlayer {
         this.play();
     }
 
+    destroy(): void {
+        clearTimeout(this.playId);
+        this._frames = [];
+    }
+
     private getLayout(): void {
         this.barWidth = 16 * deviceRatio;
         this.barGap = deviceRatio;
@@ -151,6 +156,10 @@ export class AudioPlayer {
         ];
     }
 
+    dispose(): void {
+        this.audioContext.close();
+    }
+
     private static frequency(value: number, upper: number) {
         return 30 + (4200 - 30) * (value / upper);
     }
@@ -176,8 +185,8 @@ export class AudioPlayer {
                 ));
             }
         } else {
-            this.swapGainedOscillators.map(o => o.gain.gain.setValueAtTime(.0000001, this.audioContext.currentTime));
-            this.comparingGainedOscillators.map(o => o.gain.gain.setValueAtTime(.0000001, this.audioContext.currentTime));
+            this.swapGainedOscillators.forEach(o => o.gain.gain.setValueAtTime(.0000001, this.audioContext.currentTime));
+            this.comparingGainedOscillators.forEach(o => o.gain.gain.setValueAtTime(.0000001, this.audioContext.currentTime));
         }
     }
 

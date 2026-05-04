@@ -1,14 +1,14 @@
-import React, {FunctionComponent} from 'react';
-import {NavLink, useParams} from 'react-router-dom';
+import {FunctionComponent} from 'react';
+import {NavLink} from 'react-router-dom';
 import algorithms, {AlgorithmKey} from '../Algorithms/codes';
-import {Params} from '../Algorithms';
+import {useTypedParams} from '../../hooks/useTypedParams';
 import {Theme} from '../Theme';
 import map from 'lodash/map';
 import {List, ListItem} from './styles';
 import {paramsToLink} from '../../functions';
 
 const Menu: FunctionComponent<Theme> = (theme) => {
-    const params = useParams() as unknown as Params;
+    const params = useTypedParams();
     return <List {...theme}>
         {map(algorithms, ({name}, key) =>
             <ListItem {...theme} key={key}><NavLink

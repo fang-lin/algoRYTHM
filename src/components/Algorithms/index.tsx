@@ -1,5 +1,5 @@
-import React, {createContext, FunctionComponent, useEffect, useState} from 'react';
-import {useNavigate, useParams} from 'react-router-dom';
+import {createContext, FunctionComponent, useEffect, useState} from 'react';
+import {useNavigate} from 'react-router-dom';
 import algorithms, {AlgorithmKey} from './codes';
 import CodeArea from '../CodeArea';
 import CanvasTarget from '../Canvas';
@@ -18,6 +18,7 @@ import Footer from '../Footer';
 import ThemeBar from '../Theme';
 import SettingBar from '../SettingBar';
 import AudioAlert from '../AudioAlert';
+import {useTypedParams} from '../../hooks/useTypedParams';
 
 function validParams({themeKey, algorithmKey, speedKey, audioIsEnabledKey}: Params): boolean {
     return algorithms[algorithmKey] && ThemeKeys.includes(themeKey) && validSpeedKey(speedKey) && AudioIsEnabledKey.includes(audioIsEnabledKey);
@@ -31,7 +32,7 @@ export type AudioButtonElement = HTMLAnchorElement | null;
 export const AudioButtonContext = createContext<AudioButtonElement>(null);
 
 const Algorithms: FunctionComponent = () => {
-    const params = useParams() as unknown as Params;
+    const params = useTypedParams();
     const {themeKey, algorithmKey, speedKey, audioIsEnabledKey} = params;
     const navigate = useNavigate();
     const [theme, applyTheme] = useState<Theme>(defaultTheme);

@@ -85,6 +85,6 @@ const fonts = `
 
 export default function injectFonts(): void {
     const style = document.createElement('style');
-    style.innerHTML = fonts;
+    style.textContent = fonts;
     document.head.append(style);
 }
