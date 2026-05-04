@@ -8,7 +8,7 @@ const Footer: FunctionComponent<Theme> = theme => {
             <a href="/">algoRYTHM {__APP_VERSION__}</a>
             &nbsp;|&nbsp;
             <a
-                href="https://github.com/fang-lin/sorting-animation"
+                href="https://github.com/fang-lin/algoRYTHM"
                 target="_blank"
                 rel="noopener noreferrer"
             >

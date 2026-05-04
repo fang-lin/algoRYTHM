@@ -1,5 +1,5 @@
 {
-    "name": "sorting-animation",
+    "name": "algorythm",
     "version": "2.10.5",
     "description": "sorting algorithm animation",
     "author": "Lin fang",
@@ -18,7 +18,7 @@
     },
     "repository": {
         "type": "git",
-        "url": "https://github.com/fang-lin/sorting-animation.git"
+        "url": "https://github.com/fang-lin/algoRYTHM.git"
     },
     "engines": {
         "npm": ">=10.0.0",
