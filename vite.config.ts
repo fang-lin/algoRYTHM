@@ -4,10 +4,7 @@ import svgr from 'vite-plugin-svgr';
 import {version} from './package.json';
 
 export default defineConfig({
-    plugins: [
-        react(),
-        svgr(),
-    ],
+    plugins: [react(), svgr()],
     define: {
         __APP_VERSION__: JSON.stringify(process.env.VITE_APP_VERSION || version),
     },

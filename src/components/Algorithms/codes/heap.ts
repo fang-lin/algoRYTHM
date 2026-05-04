@@ -44,9 +44,7 @@ function heapSort(list: Array<number>): void {
 `;
 
 export const executor: Executor = (list, collector) => {
-
     function adjustHeap(list: Array<number>, root: number, length: number): void {
-
         let p = root,
             chd = 2 * root;
         const tmp = list[root];
@@ -62,8 +60,7 @@ export const executor: Executor = (list, collector) => {
                 p = chd;
                 chd = 2 * p;
                 collector({list, swap: [chd]});
-            } else
-                break;
+            } else break;
         }
 
         list[p] = tmp;
@@ -71,11 +68,10 @@ export const executor: Executor = (list, collector) => {
     }
 
     function heapSort(list: Array<number>): void {
-
         let i, tmp;
         const length = list.length - 1;
 
-        for (i = length / 2 | 0; i >= 0; i--) {
+        for (i = (length / 2) | 0; i >= 0; i--) {
             adjustHeap(list, i, length);
         }
 
@@ -91,5 +87,3 @@ export const executor: Executor = (list, collector) => {
 
     heapSort(list);
 };
-
-

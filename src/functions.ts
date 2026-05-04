@@ -7,13 +7,18 @@ export function getRandomAlgorithmKey(): AlgorithmKey {
     return keys[random(0, keys.length - 1)] as AlgorithmKey;
 }
 
-export function paramsToLink({themeKey, algorithmKey, speedKey, audioIsEnabledKey}: Params): string {
+export function paramsToLink({
+    themeKey,
+    algorithmKey,
+    speedKey,
+    audioIsEnabledKey,
+}: Params): string {
     return `/${themeKey}/${algorithmKey}/${speedKey}/${audioIsEnabledKey}`;
 }
 
 export const deviceRatio: number = ((): number => window.devicePixelRatio || 1)();
 
-export function rgba(color: string, alpha = .2): string {
+export function rgba(color: string, alpha = 0.2): string {
     const match = color.match(/^rgba?\((\d+),\s*(\d+),\s*(\d+)/);
     if (match) {
         return `rgba(${match[1]}, ${match[2]}, ${match[3]}, ${alpha})`;

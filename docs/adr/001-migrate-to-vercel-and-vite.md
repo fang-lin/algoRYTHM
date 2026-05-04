@@ -17,10 +17,12 @@
 ## Options Considered
 
 ### Option A: 仅升级 Webpack 5 + 保留 AWS
+
 - Pros: 改动最小
 - Cons: 无 PR Preview，Terraform 维护成本高，DX 提升有限
 
 ### Option B: 迁移到 Vercel + Vite（采纳）
+
 - Pros: 极快开发体验，PR Preview 自动部署，零运维，Vercel CLI 集成 GitHub Actions，与 function-plotter 项目对齐
 - Cons: 需要全面升级依赖栈
 
@@ -28,15 +30,15 @@
 
 迁移到 Vercel + Vite，同时升级核心依赖：
 
-| Component | Before | After |
-|-----------|--------|-------|
-| Build tool | Webpack 4.46.0 | Vite 6 |
-| Runtime | React 17 + react-router 5 | React 18 + react-router 6 |
-| TypeScript | 4.5.4 | 5.5+ |
-| Node | 18.17.1 | 22 |
-| Deploy | AWS S3/CloudFront (Terraform) | Vercel |
-| CI/CD | GitHub Actions → Terraform | GitHub Actions → Vercel CLI |
-| Release | semantic-release 22 (before build) | semantic-release 25 (after deploy) |
+| Component  | Before                             | After                              |
+| ---------- | ---------------------------------- | ---------------------------------- |
+| Build tool | Webpack 4.46.0                     | Vite 6                             |
+| Runtime    | React 17 + react-router 5          | React 18 + react-router 6          |
+| TypeScript | 4.5.4                              | 5.5+                               |
+| Node       | 18.17.1                            | 22                                 |
+| Deploy     | AWS S3/CloudFront (Terraform)      | Vercel                             |
+| CI/CD      | GitHub Actions → Terraform         | GitHub Actions → Vercel CLI        |
+| Release    | semantic-release 22 (before build) | semantic-release 25 (after deploy) |
 
 ## Migration Steps
 

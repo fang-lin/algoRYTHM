@@ -20,9 +20,7 @@ function bubbleSort(list: Array<number>): void {
 `;
 
 export const executor: Executor = (list, collector) => {
-
     function bubbleSort(list: Array<number>): void {
-
         let tmp;
 
         for (let i = list.length; i > 0; i--) {

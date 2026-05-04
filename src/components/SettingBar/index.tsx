@@ -29,35 +29,50 @@ const SettingBar: FunctionComponent<SpeedBarProps> = ({theme, triggerShuffle, se
         setAudioButton(audioButton.current);
     }, [setAudioButton]);
 
-    return <OperationBarWrapper>
-        <Raw>
-            {
-                [Turtle, Bear, Rabbit].map((Icon, index) => {
-                    const speedKey =  index.toString() as typeof SpeedKey[number];
-                    return <Item {...theme} key={index}>
-                        <NavLink to={paramsToLink({...params, speedKey})}><Icon/></NavLink>
-                    </Item>;
+    return (
+        <OperationBarWrapper>
+            <Raw>
+                {[Turtle, Bear, Rabbit].map((Icon, index) => {
+                    const speedKey = index.toString() as (typeof SpeedKey)[number];
+                    return (
+                        <Item {...theme} key={index}>
+                            <NavLink to={paramsToLink({...params, speedKey})}>
+                                <Icon />
+                            </NavLink>
+                        </Item>
+                    );
                 })}
-        </Raw>
-        <Raw>
-            <Item  {...theme}>
-                <NavLink
-                    ref={audioButton}
-                    to={paramsToLink({
-                        ...params,
-                        audioIsEnabledKey
-                    })}
-                >{params.audioIsEnabledKey === '1' ? <MusicOff/> : <MusicOn/>}</NavLink>
-            </Item>
-            <Item onClick={({timeStamp}) => triggerShuffle(timeStamp)} {...theme}><button type="button"><Shuffle/></button></Item>
-            <Item  {...theme}>
-                <NavLink to={paramsToLink({
-                    ...params,
-                    themeKey: getRandomThemeKey()
-                })}><Palette/></NavLink>
-            </Item>
-        </Raw>
-    </OperationBarWrapper>;
+            </Raw>
+            <Raw>
+                <Item {...theme}>
+                    <NavLink
+                        ref={audioButton}
+                        to={paramsToLink({
+                            ...params,
+                            audioIsEnabledKey,
+                        })}
+                    >
+                        {params.audioIsEnabledKey === '1' ? <MusicOff /> : <MusicOn />}
+                    </NavLink>
+                </Item>
+                <Item onClick={({timeStamp}) => triggerShuffle(timeStamp)} {...theme}>
+                    <button type="button">
+                        <Shuffle />
+                    </button>
+                </Item>
+                <Item {...theme}>
+                    <NavLink
+                        to={paramsToLink({
+                            ...params,
+                            themeKey: getRandomThemeKey(),
+                        })}
+                    >
+                        <Palette />
+                    </NavLink>
+                </Item>
+            </Raw>
+        </OperationBarWrapper>
+    );
 };
 
 export default SettingBar;

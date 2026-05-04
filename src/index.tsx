@@ -11,18 +11,31 @@ import 'normalize.css/normalize.css';
 const dom = document.getElementById('root');
 
 if (dom) {
-    createRoot(dom).render(<BrowserRouter>
-        <Routes>
-            <Route path="/:themeKey/:algorithmKey/:speedKey/:audioIsEnabledKey" element={<Algorithms/>}/>
-            <Route path="/" element={<Navigate to={paramsToLink({
-                themeKey: getRandomThemeKey(),
-                algorithmKey: getRandomAlgorithmKey(),
-                speedKey: '1',
-                audioIsEnabledKey: '1'
-            })} replace/>}/>
-            <Route path="*" element={<NotFound/>}/>
-        </Routes>
-    </BrowserRouter>);
+    createRoot(dom).render(
+        <BrowserRouter>
+            <Routes>
+                <Route
+                    path="/:themeKey/:algorithmKey/:speedKey/:audioIsEnabledKey"
+                    element={<Algorithms />}
+                />
+                <Route
+                    path="/"
+                    element={
+                        <Navigate
+                            to={paramsToLink({
+                                themeKey: getRandomThemeKey(),
+                                algorithmKey: getRandomAlgorithmKey(),
+                                speedKey: '1',
+                                audioIsEnabledKey: '1',
+                            })}
+                            replace
+                        />
+                    }
+                />
+                <Route path="*" element={<NotFound />} />
+            </Routes>
+        </BrowserRouter>
+    );
 }
 
 injectFonts();

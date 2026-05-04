@@ -73,9 +73,11 @@ const Canvas: FunctionComponent<CanvasProps> = ({theme, speed, executor, shuffle
         }
     }, [audioIsEnabledKey]);
 
-    return <CanvasWrapper>
-        <CanvasStage ref={canvasRef} width={size[0]} height={size[1]}/>
-    </CanvasWrapper>;
+    return (
+        <CanvasWrapper>
+            <CanvasStage ref={canvasRef} width={size[0]} height={size[1]} />
+        </CanvasWrapper>
+    );
 };
 
 export default Canvas;

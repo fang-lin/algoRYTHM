@@ -9,9 +9,9 @@ import * as shaker from './shaker';
 import * as shell from './shell';
 
 export interface Frame {
-    list: Array<number>,
-    comparing?: [number, number],
-    swap?: [number, number] | [number]
+    list: Array<number>;
+    comparing?: [number, number];
+    swap?: [number, number] | [number];
 }
 
 export interface Executor {

@@ -41,9 +41,7 @@ function quickSort(list: Array<number>, left: number, right: number): void {
 
 export const executor: Executor = (list, collector) => {
     function quickSort(list: Array<number>, left = 0, right = list.length - 1): void {
-
-        let pivot, i, j,
-            tmp;
+        let pivot, i, j, tmp;
 
         if (left < right) {
             i = left;

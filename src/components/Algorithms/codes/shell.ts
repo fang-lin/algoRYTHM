@@ -29,10 +29,11 @@ function shellSort(list: Array<number>): void {
 
 export const executor: Executor = (list, collector) => {
     function shellSort(list: Array<number>): void {
-
         const length = list.length;
-        let gap = length / 2 | 0,
-            i, j, tmp;
+        let gap = (length / 2) | 0,
+            i,
+            j,
+            tmp;
 
         while (gap > 0) {
             for (i = gap; i < length; i++) {
@@ -50,7 +51,7 @@ export const executor: Executor = (list, collector) => {
                 collector({list, swap: [j + gap, i]});
             }
 
-            gap = gap / 2 | 0;
+            gap = (gap / 2) | 0;
         }
     }
 

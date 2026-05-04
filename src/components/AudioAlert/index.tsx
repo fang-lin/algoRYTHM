@@ -17,30 +17,39 @@ const AudioAlert: FunctionComponent<AudioAlertProps> = ({theme, setFirstShowAudi
     const params = useTypedParams();
     const navigate = useNavigate();
     const audioButton = useContext(AudioButtonContext);
-    return audioButton ? <AudioAlertBackground {...theme}>
-        <AudioAlterButton onClick={() => {
-            audioButton.click();
-            navigate(paramsToLink({
-                ...params,
-                audioIsEnabledKey: '1'
-            }));
-            setFirstShowAudioAlert(false);
-        }} {...theme}>
-            <Music/>
-            PLAY
-        </AudioAlterButton>
-        <CoinTossButton {...theme}>
-            <NavLink to={paramsToLink({
-                ...params,
-                algorithmKey: getRandomAlgorithmKey(),
-                themeKey: getRandomThemeKey(),
-            })}>
-                <CoinToss/>
-                Toss
-            </NavLink>
-        </CoinTossButton>
-        <Head3 {...theme}>algoRYTHM {__APP_VERSION__}</Head3>
-    </AudioAlertBackground> : null;
+    return audioButton ? (
+        <AudioAlertBackground {...theme}>
+            <AudioAlterButton
+                onClick={() => {
+                    audioButton.click();
+                    navigate(
+                        paramsToLink({
+                            ...params,
+                            audioIsEnabledKey: '1',
+                        })
+                    );
+                    setFirstShowAudioAlert(false);
+                }}
+                {...theme}
+            >
+                <Music />
+                PLAY
+            </AudioAlterButton>
+            <CoinTossButton {...theme}>
+                <NavLink
+                    to={paramsToLink({
+                        ...params,
+                        algorithmKey: getRandomAlgorithmKey(),
+                        themeKey: getRandomThemeKey(),
+                    })}
+                >
+                    <CoinToss />
+                    Toss
+                </NavLink>
+            </CoinTossButton>
+            <Head3 {...theme}>algoRYTHM {__APP_VERSION__}</Head3>
+        </AudioAlertBackground>
+    ) : null;
 };
 
 export default AudioAlert;

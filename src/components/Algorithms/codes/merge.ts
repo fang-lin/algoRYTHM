@@ -49,10 +49,11 @@ function mergeSort(list: Array<number>): void {
 
 export const executor: Executor = (list, collector) => {
     function merge(list: Array<number>, low: number, mid: number, high: number): void {
-
         const ordered = [];
-        let i = low, j = mid,
-            k = 0, length;
+        let i = low,
+            j = mid,
+            k = 0,
+            length;
 
         while (i < mid && j < high) {
             collector({list, comparing: [i, j]});
@@ -63,7 +64,6 @@ export const executor: Executor = (list, collector) => {
                 collector({list, swap: [j]});
                 ordered[k++] = list[j++];
             }
-
         }
 
         while (i < mid) {
@@ -78,7 +78,6 @@ export const executor: Executor = (list, collector) => {
             ordered[k++] = list[j++];
         }
 
-
         for (k = 0, length = ordered.length; k < length; k++) {
             collector({list, swap: [k + low]});
             list[k + low] = ordered[k];
@@ -86,7 +85,6 @@ export const executor: Executor = (list, collector) => {
     }
 
     function mergePass(list: Array<number>, length: number, n: number): void {
-
         let i;
 
         for (i = 0; i < n - 2 * length; i += 2 * length) {
