@@ -20,6 +20,7 @@ import SettingBar from '../SettingBar';
 import AudioAlert from '../AudioAlert';
 import {useTypedParams} from '../../hooks/useTypedParams';
 import {speedValue} from './constants';
+import {audioOn} from '../../functions';
 
 export type AudioButtonElement = HTMLAnchorElement | null;
 export const AudioButtonContext = createContext<AudioButtonElement>(null);
@@ -31,7 +32,7 @@ const Algorithms: FunctionComponent = () => {
     const [theme, applyTheme] = useState<Theme>(defaultTheme);
     const [shuffle, triggerShuffle] = useState<number>(0);
     const [firstShowAudioAlert, setFirstShowAudioAlert] = useState<boolean>(
-        audioIsEnabledKey === '1'
+        audioOn(audioIsEnabledKey)
     );
     const [audioButton, setAudioButton] = useState<AudioButtonElement>(null);
 

@@ -2,7 +2,7 @@ import styled from 'styled-components';
 import {Theme} from '../Theme';
 import {device} from '../Algorithms/styles';
 
-export const List = styled.ul<Theme>`
+export const List = styled.ul`
     list-style: none;
     padding: 0;
     margin: -3px;
