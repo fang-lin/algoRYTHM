@@ -155,44 +155,31 @@ export const defaultTheme: Theme = {
     themeKey: 'unknown',
 };
 
+// Each syntax color is read from a CodeMirror token element via getComputedStyle.
+const colorSelectors: Array<[keyof Theme, string]> = [
+    ['keywordColor', '.cm-keyword'],
+    ['variableColor', '.cm-variable'],
+    ['defColor', '.cm-def'],
+    ['operatorColor', '.cm-operator'],
+    ['numberColor', '.cm-number'],
+    ['codeColor', '.CodeMirror-line '],
+];
+
 export function queryTheme(element: HTMLDivElement, themeKey: ThemeKey): Theme {
-    let {
-        backgroundColor,
-        keywordColor,
-        variableColor,
-        defColor,
-        operatorColor,
-        numberColor,
-        codeColor,
-    } = defaultTheme;
+    const theme: Theme = {...defaultTheme, themeKey};
 
     const cmDom = element.querySelector('.CodeMirror');
-
     if (cmDom) {
+        // The background is a shorthand (e.g. "rgb(40, 42, 54) none repeat ..."),
+        // so extract the rgb() part from anywhere in the string.
         const exec = /rgb\([\d\s,]+\)/i.exec(getComputedStyle(cmDom).background);
-        if (exec && exec[0]) backgroundColor = exec[0];
+        if (exec && exec[0]) theme.backgroundColor = exec[0];
     }
-    const cmKeywordDom = element.querySelector('.cm-keyword');
-    if (cmKeywordDom) keywordColor = getComputedStyle(cmKeywordDom).color;
-    const cmVariableDom = element.querySelector('.cm-variable');
-    if (cmVariableDom) variableColor = getComputedStyle(cmVariableDom).color;
-    const cmDefDom = element.querySelector('.cm-def');
-    if (cmDefDom) defColor = getComputedStyle(cmDefDom).color;
-    const cmOperatorDom = element.querySelector('.cm-operator');
-    if (cmOperatorDom) operatorColor = getComputedStyle(cmOperatorDom).color;
-    const cmNumberDom = element.querySelector('.cm-number');
-    if (cmNumberDom) numberColor = getComputedStyle(cmNumberDom).color;
-    const cmColorDom = element.querySelector('.CodeMirror-line ');
-    if (cmColorDom) codeColor = getComputedStyle(cmColorDom).color;
 
-    return {
-        backgroundColor,
-        keywordColor,
-        variableColor,
-        defColor,
-        operatorColor,
-        numberColor,
-        codeColor,
-        themeKey,
-    };
+    colorSelectors.forEach(([field, selector]) => {
+        const dom = element.querySelector(selector);
+        if (dom) theme[field] = getComputedStyle(dom).color;
+    });
+
+    return theme;
 }
