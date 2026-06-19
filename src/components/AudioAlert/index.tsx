@@ -13,6 +13,9 @@ interface AudioAlertProps {
     setFirstShowAudioAlert: Dispatch<SetStateAction<boolean>>;
 }
 
+// One-shot handler that cancels the music-toggle link's navigation (see PLAY onClick).
+const suppressNavigation = (event: Event) => event.preventDefault();
+
 const AudioAlert: FunctionComponent<AudioAlertProps> = ({theme, setFirstShowAudioAlert}) => {
     const params = useTypedParams();
     const navigate = useNavigate();
@@ -21,6 +24,12 @@ const AudioAlert: FunctionComponent<AudioAlertProps> = ({theme, setFirstShowAudi
         <AudioAlertBackground {...theme}>
             <AudioAlterButton
                 onClick={() => {
+                    // Clicking the music-toggle link fires the oscillator start()
+                    // listeners (the audio unlock gesture). Suppress the link's own
+                    // navigation (react-router's Link skips it when defaultPrevented)
+                    // so we don't bounce through the audio-OFF URL; we navigate to
+                    // the audio-ON URL ourselves, exactly once.
+                    audioButton.addEventListener('click', suppressNavigation, {once: true});
                     audioButton.click();
                     navigate(
                         paramsToLink({
