@@ -5,7 +5,7 @@ import {Executor} from '../Algorithms/codes';
 import {AnimationPlayer, Size, AudioPlayer} from './functions';
 import {AudioButtonContext} from '../Algorithms';
 import {useTypedParams} from '../../hooks/useTypedParams';
-import {deviceRatio} from '../../functions';
+import {audioOn, deviceRatio} from '../../functions';
 
 interface CanvasProps {
     theme: Theme;
@@ -74,7 +74,7 @@ const Canvas: FunctionComponent<CanvasProps> = ({theme, speed, executor, shuffle
 
     useEffect(() => {
         if (audioPlayer) {
-            audioPlayer.isEnabled = !!parseInt(audioIsEnabledKey);
+            audioPlayer.isEnabled = audioOn(audioIsEnabledKey);
         }
     }, [audioPlayer, audioIsEnabledKey]);
 

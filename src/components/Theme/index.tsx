@@ -9,12 +9,10 @@ const ThemeBar: FunctionComponent<Theme> = theme => {
     const params = useTypedParams();
     return (
         <div>
-            <List {...theme}>
-                {ThemeKeys.map((themeKey, key) => (
-                    <ListItem {...theme} key={key}>
-                        <NavLink key={key} to={paramsToLink({...params, themeKey})}>
-                            {themeKey}
-                        </NavLink>
+            <List>
+                {ThemeKeys.map(themeKey => (
+                    <ListItem {...theme} key={themeKey}>
+                        <NavLink to={paramsToLink({...params, themeKey})}>{themeKey}</NavLink>
                     </ListItem>
                 ))}
             </List>

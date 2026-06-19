@@ -1,6 +1,6 @@
 import algorithms, {AlgorithmKey} from './components/Algorithms/codes';
 import random from 'lodash/random';
-import {Params} from './components/Algorithms/constants';
+import {AudioIsEnabledKeyType, Params} from './components/Algorithms/constants';
 
 export function getRandomAlgorithmKey(): AlgorithmKey {
     const keys = Object.keys(algorithms);
@@ -27,4 +27,12 @@ export function parseRgb(color: string): [string, string, string] | null {
 export function rgba(color: string, alpha = 0.2): string {
     const rgb = parseRgb(color);
     return rgb ? `rgba(${rgb[0]}, ${rgb[1]}, ${rgb[2]}, ${alpha})` : color;
+}
+
+export function audioOn(audioIsEnabledKey: string): boolean {
+    return audioIsEnabledKey === '1';
+}
+
+export function toggleAudioKey(audioIsEnabledKey: string): AudioIsEnabledKeyType {
+    return audioOn(audioIsEnabledKey) ? '0' : '1';
 }

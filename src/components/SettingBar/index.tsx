@@ -11,7 +11,7 @@ import Shuffle from '../../icons/shuffle.svg?react';
 import MusicOff from '../../icons/music-off.svg?react';
 import MusicOn from '../../icons/music-on.svg?react';
 import Palette from '../../icons/palette.svg?react';
-import {paramsToLink} from '../../functions';
+import {audioOn, paramsToLink, toggleAudioKey} from '../../functions';
 import {SpeedKey} from '../Algorithms/constants';
 
 interface SpeedBarProps {
@@ -22,7 +22,7 @@ interface SpeedBarProps {
 
 const SettingBar: FunctionComponent<SpeedBarProps> = ({theme, triggerShuffle, setAudioButton}) => {
     const params = useTypedParams();
-    const audioIsEnabledKey = params.audioIsEnabledKey === '1' ? '0' : '1';
+    const audioIsEnabledKey = toggleAudioKey(params.audioIsEnabledKey);
 
     return (
         <OperationBarWrapper>
@@ -47,7 +47,7 @@ const SettingBar: FunctionComponent<SpeedBarProps> = ({theme, triggerShuffle, se
                             audioIsEnabledKey,
                         })}
                     >
-                        {params.audioIsEnabledKey === '1' ? <MusicOff /> : <MusicOn />}
+                        {audioOn(params.audioIsEnabledKey) ? <MusicOff /> : <MusicOn />}
                     </NavLink>
                 </Item>
                 <Item onClick={({timeStamp}) => triggerShuffle(timeStamp)} {...theme}>
