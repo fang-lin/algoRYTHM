@@ -18,60 +18,65 @@ const Canvas: FunctionComponent<CanvasProps> = ({theme, speed, executor, shuffle
     const {audioIsEnabledKey} = useTypedParams();
     const canvasRef = useRef<HTMLCanvasElement>(null);
     const [size, setSize] = useState<Size>([0, 0]);
-    const animationPlayerRef = useRef<AnimationPlayer>();
-    const audioPlayerRef = useRef<AudioPlayer>();
+    // Players are state, not refs, so the config effects below re-run once the
+    // players are created async (only possible after the audio button arrives via
+    // context). A ref would not re-trigger them — keep them in the effect deps.
+    const [animationPlayer, setAnimationPlayer] = useState<AnimationPlayer>();
+    const [audioPlayer, setAudioPlayer] = useState<AudioPlayer>();
     const audioButton = useContext(AudioButtonContext);
 
     useEffect(() => {
+        let createdAnimationPlayer: AnimationPlayer | undefined;
+        let createdAudioPlayer: AudioPlayer | undefined;
         if (canvasRef.current && audioButton) {
             const {width, height} = canvasRef.current.getBoundingClientRect();
             setSize([width * deviceRatio, height * deviceRatio]);
             const canvasContext = canvasRef.current.getContext('2d');
             if (canvasContext) {
-                const _audioPlayer = new AudioPlayer(audioButton);
-                const _animationPlayer = new AnimationPlayer(canvasContext, _audioPlayer);
+                createdAudioPlayer = new AudioPlayer(audioButton);
+                createdAnimationPlayer = new AnimationPlayer(canvasContext, createdAudioPlayer);
 
-                _animationPlayer.size = [width * deviceRatio, height * deviceRatio];
+                createdAnimationPlayer.size = [width * deviceRatio, height * deviceRatio];
 
-                animationPlayerRef.current = _animationPlayer;
-                audioPlayerRef.current = _audioPlayer;
+                setAnimationPlayer(createdAnimationPlayer);
+                setAudioPlayer(createdAudioPlayer);
             }
         }
         return () => {
-            animationPlayerRef.current?.destroy();
-            audioPlayerRef.current?.dispose();
+            createdAnimationPlayer?.destroy();
+            createdAudioPlayer?.dispose();
         };
     }, [audioButton]);
 
     useEffect(() => {
-        if (animationPlayerRef.current) {
-            animationPlayerRef.current.theme = theme;
+        if (animationPlayer) {
+            animationPlayer.theme = theme;
         }
-    }, [theme]);
+    }, [animationPlayer, theme]);
 
     useEffect(() => {
-        if (animationPlayerRef.current) {
-            animationPlayerRef.current.executor = executor;
+        if (animationPlayer) {
+            animationPlayer.executor = executor;
         }
-    }, [executor]);
+    }, [animationPlayer, executor]);
 
     useEffect(() => {
-        if (animationPlayerRef.current) {
-            animationPlayerRef.current.speed = speed;
+        if (animationPlayer) {
+            animationPlayer.speed = speed;
         }
-    }, [speed]);
+    }, [animationPlayer, speed]);
 
     useEffect(() => {
-        if (animationPlayerRef.current) {
-            animationPlayerRef.current.replay();
+        if (animationPlayer) {
+            animationPlayer.replay();
         }
-    }, [shuffle]);
+    }, [animationPlayer, shuffle]);
 
     useEffect(() => {
-        if (audioPlayerRef.current) {
-            audioPlayerRef.current.isEnabled = !!parseInt(audioIsEnabledKey);
+        if (audioPlayer) {
+            audioPlayer.isEnabled = !!parseInt(audioIsEnabledKey);
         }
-    }, [audioIsEnabledKey]);
+    }, [audioPlayer, audioIsEnabledKey]);
 
     return (
         <CanvasWrapper>
