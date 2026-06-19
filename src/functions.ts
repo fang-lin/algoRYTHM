@@ -1,6 +1,6 @@
 import algorithms, {AlgorithmKey} from './components/Algorithms/codes';
 import random from 'lodash/random';
-import {Params} from './components/Algorithms';
+import {Params} from './components/Algorithms/constants';
 
 export function getRandomAlgorithmKey(): AlgorithmKey {
     const keys = Object.keys(algorithms);
@@ -16,12 +16,15 @@ export function paramsToLink({
     return `/${themeKey}/${algorithmKey}/${speedKey}/${audioIsEnabledKey}`;
 }
 
-export const deviceRatio: number = ((): number => window.devicePixelRatio || 1)();
+export const deviceRatio = window.devicePixelRatio || 1;
+
+// Parse the leading r,g,b out of an "rgb(...)" / "rgba(...)" string, or null if it doesn't match.
+export function parseRgb(color: string): [string, string, string] | null {
+    const match = color.match(/^rgba?\((\d+),\s*(\d+),\s*(\d+)/);
+    return match ? [match[1], match[2], match[3]] : null;
+}
 
 export function rgba(color: string, alpha = 0.2): string {
-    const match = color.match(/^rgba?\((\d+),\s*(\d+),\s*(\d+)/);
-    if (match) {
-        return `rgba(${match[1]}, ${match[2]}, ${match[3]}, ${alpha})`;
-    }
-    return color;
+    const rgb = parseRgb(color);
+    return rgb ? `rgba(${rgb[0]}, ${rgb[1]}, ${rgb[2]}, ${alpha})` : color;
 }

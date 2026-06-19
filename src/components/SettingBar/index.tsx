@@ -12,7 +12,7 @@ import MusicOff from '../../icons/music-off.svg?react';
 import MusicOn from '../../icons/music-on.svg?react';
 import Palette from '../../icons/palette.svg?react';
 import {paramsToLink} from '../../functions';
-import {SpeedKey} from '../Algorithms';
+import {SpeedKey} from '../Algorithms/constants';
 
 interface SpeedBarProps {
     theme: Theme;
