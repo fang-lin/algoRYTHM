@@ -1,4 +1,4 @@
-import {Executor} from './index';
+import {Executor, swap} from './index';
 
 export const name = 'Select';
 
@@ -29,7 +29,7 @@ function selectSort(list: Array<number>): void {
 export const executor: Executor = (list, collector) => {
     function selectSort(list: Array<number>): void {
         const length = list.length;
-        let i, j, k, tmp;
+        let i, j, k;
 
         for (i = 0; i < length; i++) {
             k = i;
@@ -43,9 +43,7 @@ export const executor: Executor = (list, collector) => {
 
             if (k != i) {
                 collector({list, comparing: [i, k]});
-                tmp = list[k];
-                list[k] = list[i];
-                list[i] = tmp;
+                swap(list, k, i);
                 collector({list, swap: [i, k]});
             }
         }
