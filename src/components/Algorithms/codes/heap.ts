@@ -1,4 +1,4 @@
-import {Executor} from './index';
+import {Executor, swap} from './index';
 
 export const name = 'Heap';
 
@@ -68,7 +68,7 @@ export const executor: Executor = (list, collector) => {
     }
 
     function heapSort(list: Array<number>): void {
-        let i, tmp;
+        let i;
         const length = list.length - 1;
 
         for (i = (length / 2) | 0; i >= 0; i--) {
@@ -76,9 +76,7 @@ export const executor: Executor = (list, collector) => {
         }
 
         for (i = length; i > 0; i--) {
-            tmp = list[0];
-            list[0] = list[i];
-            list[i] = tmp;
+            swap(list, 0, i);
             collector({list, swap: [0, i]});
 
             adjustHeap(list, 0, i - 1);

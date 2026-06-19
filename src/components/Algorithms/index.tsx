@@ -1,9 +1,8 @@
 import {createContext, FunctionComponent, useEffect, useState} from 'react';
-import {useNavigate} from 'react-router-dom';
-import algorithms, {AlgorithmKey} from './codes';
+import algorithms from './codes';
 import CodeArea from '../CodeArea';
 import CanvasTarget from '../Canvas';
-import {defaultTheme, Theme, ThemeKey, ThemeKeys} from '../Theme';
+import {defaultTheme, Theme} from '../Theme';
 import {
     GlobalStyle,
     Wrapper,
@@ -19,87 +18,79 @@ import Footer from '../Footer';
 import ThemeBar from '../Theme';
 import SettingBar from '../SettingBar';
 import AudioAlert from '../AudioAlert';
+import {useNavigate} from 'react-router-dom';
 import {useTypedParams} from '../../hooks/useTypedParams';
+import {speedValue} from './constants';
+import {paramsToLink} from '../../functions';
 
-function validParams({themeKey, algorithmKey, speedKey, audioIsEnabledKey}: Params): boolean {
-    return (
-        algorithms[algorithmKey] &&
-        ThemeKeys.includes(themeKey) &&
-        validSpeedKey(speedKey) &&
-        AudioIsEnabledKey.includes(audioIsEnabledKey)
-    );
-}
+export type AudioUnlock = (() => void) | null;
+export const AudioUnlockContext = createContext<AudioUnlock>(null);
 
-function validSpeedKey(speedKey: string): boolean {
-    return SpeedValue[parseInt(speedKey)] !== undefined;
-}
-
-export type AudioButtonElement = HTMLAnchorElement | null;
-export const AudioButtonContext = createContext<AudioButtonElement>(null);
+// Module-level: resets only on a full page load, not on in-app navigation. Used so
+// the audio-off -> audio-on redirect happens once per refresh, never when the user
+// toggles sound off mid-session.
+let audioRedirectedThisLoad = false;
 
 const Algorithms: FunctionComponent = () => {
+    // useTypedParams guarantees every param is valid (it coerces to a default
+    // otherwise), so the route always resolves to a real algorithm — no guard needed.
     const params = useTypedParams();
     const {themeKey, algorithmKey, speedKey, audioIsEnabledKey} = params;
     const navigate = useNavigate();
     const [theme, applyTheme] = useState<Theme>(defaultTheme);
     const [shuffle, triggerShuffle] = useState<number>(0);
-    const [firstShowAudioAlert, setFirstShowAudioAlert] = useState<boolean>(
-        audioIsEnabledKey === '1'
-    );
-    const [audioButton, setAudioButton] = useState<AudioButtonElement>(null);
+    // A fresh load always lands on the audio-on URL (the effect below redirects /0 to
+    // /1), so the PLAY gate shows on every load and nothing auto-plays until clicked.
+    const [firstShowAudioAlert, setFirstShowAudioAlert] = useState<boolean>(true);
+    const [audioUnlock, setAudioUnlock] = useState<AudioUnlock>(null);
 
+    // Refreshing an audio-off URL (.../0) redirects to the audio-on URL (.../1) so the
+    // PLAY gate always shows. Only the first load after a refresh redirects; toggling
+    // sound off mid-session stays on /0.
     useEffect(() => {
-        if (!validParams(params)) navigate('/');
-    }, [params, navigate]);
+        if (!audioRedirectedThisLoad) {
+            audioRedirectedThisLoad = true;
+            if (audioIsEnabledKey === '0') {
+                navigate(paramsToLink({...params, audioIsEnabledKey: '1'}), {replace: true});
+            }
+        }
+        // eslint-disable-next-line react-hooks/exhaustive-deps
+    }, []);
 
-    if (validParams(params)) {
-        const {name, code, executor} = algorithms[algorithmKey];
-        return (
-            <AudioButtonContext.Provider value={audioButton}>
-                <CanvasTarget
-                    {...{theme, speed: SpeedValue[parseInt(speedKey)], executor, shuffle}}
-                />
-                <Head1 {...theme}>algoRYTHM</Head1>
-                <Wrapper {...{firstShowAudioAlert}}>
-                    <AlgorithmsWrapper>
-                        <GlobalStyle {...theme} />
-                        <CodeAreaWrapper>
-                            <Head2 {...theme}>
+    const {name, code, executor} = algorithms[algorithmKey];
+    return (
+        <AudioUnlockContext.Provider value={audioUnlock}>
+            <CanvasTarget
+                {...{theme, speed: speedValue[speedKey], executor, shuffle, setAudioUnlock}}
+            />
+            <Head1 {...theme}>algoRYTHM</Head1>
+            <Wrapper {...{firstShowAudioAlert}}>
+                <AlgorithmsWrapper>
+                    <GlobalStyle {...theme} />
+                    <CodeAreaWrapper>
+                        <Head2 {...theme}>
+                            {' '}
+                            {name}
+                            <sup>
                                 {' '}
-                                {name}
-                                <sup>
-                                    {' '}
-                                    with <span>{themeKey}</span>
-                                </sup>
-                            </Head2>
-                            <CodeArea {...{themeKey, code, applyTheme}} />
-                        </CodeAreaWrapper>
-                        <MenuWrapper>
-                            <Menu {...theme} />
-                            <SettingBar {...{theme, triggerShuffle, setAudioButton}} />
-                        </MenuWrapper>
-                        <ThemeBarWrapper>
-                            <ThemeBar {...theme} />
-                        </ThemeBarWrapper>
-                    </AlgorithmsWrapper>
-                    <Footer {...theme} />
-                </Wrapper>
-                {firstShowAudioAlert && <AudioAlert {...{theme, setFirstShowAudioAlert}} />}
-            </AudioButtonContext.Provider>
-        );
-    }
-    return null;
+                                with <span>{themeKey}</span>
+                            </sup>
+                        </Head2>
+                        <CodeArea {...{themeKey, code, applyTheme}} />
+                    </CodeAreaWrapper>
+                    <MenuWrapper>
+                        <Menu {...theme} />
+                        <SettingBar {...{theme, triggerShuffle}} />
+                    </MenuWrapper>
+                    <ThemeBarWrapper>
+                        <ThemeBar {...theme} />
+                    </ThemeBarWrapper>
+                </AlgorithmsWrapper>
+                <Footer {...theme} />
+            </Wrapper>
+            {firstShowAudioAlert && <AudioAlert {...{theme, setFirstShowAudioAlert}} />}
+        </AudioUnlockContext.Provider>
+    );
 };
 
 export default Algorithms;
-
-export const SpeedKey = ['2', '1', '0'] as const;
-const SpeedValue = [1000, 100, 10] as const;
-const AudioIsEnabledKey = ['1', '0'] as const;
-
-export interface Params {
-    themeKey: ThemeKey;
-    algorithmKey: AlgorithmKey;
-    speedKey: (typeof SpeedKey)[number];
-    audioIsEnabledKey: (typeof AudioIsEnabledKey)[number];
-}
