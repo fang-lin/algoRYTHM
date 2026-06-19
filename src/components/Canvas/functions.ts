@@ -25,6 +25,11 @@ export class AnimationPlayer {
     private barCount = 0;
     private barGap = 0;
     private barWidth = 0;
+    private barStride = 0;
+    private barStart = 0;
+    private swapFill = '';
+    private comparingFill = '';
+    private defFill = '';
 
     constructor(context: CanvasRenderingContext2D, audioPlayer: AudioPlayer) {
         this.context = context;
@@ -54,27 +59,31 @@ export class AnimationPlayer {
 
     set theme(theme: Theme) {
         this._theme = theme;
+        // Precompute the three bar fill colors once per theme instead of running
+        // rgba()'s regex for every bar on every frame.
+        this.swapFill = rgba(theme.keywordColor, 0.3);
+        this.comparingFill = rgba(theme.variableColor, 0.3);
+        this.defFill = rgba(theme.defColor);
     }
 
     drawFrame(frame: Frame): void {
         if (this._size && this._theme) {
-            const {keywordColor, variableColor, defColor} = this._theme;
-            this.context.clearRect(0, 0, this._size[0], this._size[1]);
+            const height = this._size[1];
+            this.context.clearRect(0, 0, this._size[0], height);
             frame.list.forEach((value, i) => {
                 if (frame.swap?.includes(i)) {
-                    this.context.fillStyle = rgba(keywordColor, 0.3);
+                    this.context.fillStyle = this.swapFill;
                 } else if (frame.comparing?.includes(i)) {
-                    this.context.fillStyle = rgba(variableColor, 0.3);
+                    this.context.fillStyle = this.comparingFill;
                 } else {
-                    this.context.fillStyle = rgba(defColor);
+                    this.context.fillStyle = this.defFill;
                 }
-                if (this._size)
-                    this.context.fillRect(
-                        this.left + this.barGap / 2 + (this.barWidth + this.barGap) * i,
-                        this._size[1] - this.barUnit * value,
-                        this.barWidth,
-                        this.barUnit * value
-                    );
+                this.context.fillRect(
+                    this.barStart + this.barStride * i,
+                    height - this.barUnit * value,
+                    this.barWidth,
+                    this.barUnit * value
+                );
             });
         }
     }
@@ -113,11 +122,13 @@ export class AnimationPlayer {
     private getLayout(): void {
         this.barWidth = 16 * deviceRatio;
         this.barGap = deviceRatio;
+        this.barStride = this.barWidth + this.barGap;
         if (this._size) {
-            this.barCount = (this._size[0] / (this.barWidth + this.barGap)) | 0;
+            this.barCount = (this._size[0] / this.barStride) | 0;
             this.barUnit = (this._size[1] / this.barCount) | 0;
-            this.left = (this._size[0] - this.barCount * (this.barWidth + this.barGap)) / 2;
+            this.left = (this._size[0] - this.barCount * this.barStride) / 2;
         }
+        this.barStart = this.left + this.barGap / 2;
     }
 }
 
