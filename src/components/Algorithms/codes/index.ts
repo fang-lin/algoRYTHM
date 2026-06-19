@@ -18,6 +18,14 @@ export interface Executor {
     (list: Array<number>, collector: (frame: Frame) => void): void;
 }
 
+// Exchange two elements in place. Kept free of any collector() call so executors
+// can place their frame emissions exactly where they need them.
+export function swap(list: Array<number>, a: number, b: number): void {
+    const tmp = list[a];
+    list[a] = list[b];
+    list[b] = tmp;
+}
+
 export interface Code {
     code: string;
     name: string;

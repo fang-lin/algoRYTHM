@@ -1,4 +1,4 @@
-import {Executor} from './index';
+import {Executor, swap} from './index';
 
 export const name = 'Shaker';
 
@@ -42,16 +42,13 @@ export const executor: Executor = (list, collector) => {
         let i,
             left = 0,
             right = list.length,
-            k = 0,
-            tmp;
+            k = 0;
 
         while (left < right) {
             for (i = left; i < right; i++) {
                 if (list[i] > list[i + 1]) {
                     collector({list, comparing: [i, i + 1]});
-                    tmp = list[i];
-                    list[i] = list[i + 1];
-                    list[i + 1] = tmp;
+                    swap(list, i, i + 1);
                     collector({list, swap: [i, i + 1]});
                     k = i;
                 }
@@ -62,9 +59,7 @@ export const executor: Executor = (list, collector) => {
             for (i = right; i > left; i--) {
                 if (list[i - 1] > list[i]) {
                     collector({list, comparing: [i, i - 1]});
-                    tmp = list[i];
-                    list[i] = list[i - 1];
-                    list[i - 1] = tmp;
+                    swap(list, i, i - 1);
                     collector({list, swap: [i, i - 1]});
                     k = i;
                 }
