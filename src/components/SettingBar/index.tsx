@@ -1,4 +1,4 @@
-import {Dispatch, FunctionComponent, SetStateAction, useEffect, useRef} from 'react';
+import {Dispatch, FunctionComponent, SetStateAction} from 'react';
 import Rabbit from '../../icons/rabbit.svg?react';
 import Turtle from '../../icons/turtle.svg?react';
 import Bear from '../../icons/bear.svg?react';
@@ -22,12 +22,7 @@ interface SpeedBarProps {
 
 const SettingBar: FunctionComponent<SpeedBarProps> = ({theme, triggerShuffle, setAudioButton}) => {
     const params = useTypedParams();
-    const audioButton = useRef<HTMLAnchorElement>(null);
     const audioIsEnabledKey = params.audioIsEnabledKey === '1' ? '0' : '1';
-
-    useEffect(() => {
-        setAudioButton(audioButton.current);
-    }, [setAudioButton]);
 
     return (
         <OperationBarWrapper>
@@ -46,7 +41,7 @@ const SettingBar: FunctionComponent<SpeedBarProps> = ({theme, triggerShuffle, se
             <Raw>
                 <Item {...theme}>
                     <NavLink
-                        ref={audioButton}
+                        ref={setAudioButton}
                         to={paramsToLink({
                             ...params,
                             audioIsEnabledKey,
