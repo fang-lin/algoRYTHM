@@ -27,7 +27,9 @@ jobs:
             - run: npm ci
             - run: npm run lint
             - run: npm run prettier:check
-            - run: npm audit --audit-level=high
+            # Audit production deps only: this is a static frontend, so dev/release
+            # tooling (semantic-release's bundled npm/undici, etc.) never ships.
+            - run: npm audit --omit=dev --audit-level=high
 
     deploy-preview:
         if: github.event_name == 'pull_request'
