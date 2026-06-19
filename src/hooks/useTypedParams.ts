@@ -1,5 +1,12 @@
 import {useParams} from 'react-router-dom';
-import {Params} from '../components/Algorithms';
+import {
+    AudioIsEnabledKey,
+    defaultAlgorithmKey,
+    defaultAudioIsEnabledKey,
+    defaultSpeedKey,
+    Params,
+    SpeedKey,
+} from '../components/Algorithms/constants';
 import algorithms from '../components/Algorithms/codes';
 import {ThemeKeys} from '../components/Theme';
 
@@ -12,12 +19,14 @@ export function useTypedParams(): Params {
         algorithmKey:
             raw.algorithmKey && raw.algorithmKey in algorithms
                 ? (raw.algorithmKey as Params['algorithmKey'])
-                : ('bubble-sort' as Params['algorithmKey']),
-        speedKey: (['0', '1', '2'].includes(raw.speedKey ?? '')
+                : defaultAlgorithmKey,
+        speedKey: ((SpeedKey as readonly string[]).includes(raw.speedKey ?? '')
             ? raw.speedKey
-            : '1') as Params['speedKey'],
-        audioIsEnabledKey: (['0', '1'].includes(raw.audioIsEnabledKey ?? '')
+            : defaultSpeedKey) as Params['speedKey'],
+        audioIsEnabledKey: ((AudioIsEnabledKey as readonly string[]).includes(
+            raw.audioIsEnabledKey ?? ''
+        )
             ? raw.audioIsEnabledKey
-            : '0') as Params['audioIsEnabledKey'],
+            : defaultAudioIsEnabledKey) as Params['audioIsEnabledKey'],
     };
 }

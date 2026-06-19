@@ -1,9 +1,8 @@
-import {createContext, FunctionComponent, useEffect, useState} from 'react';
-import {useNavigate} from 'react-router-dom';
-import algorithms, {AlgorithmKey} from './codes';
+import {createContext, FunctionComponent, useState} from 'react';
+import algorithms from './codes';
 import CodeArea from '../CodeArea';
 import CanvasTarget from '../Canvas';
-import {defaultTheme, Theme, ThemeKey, ThemeKeys} from '../Theme';
+import {defaultTheme, Theme} from '../Theme';
 import {
     GlobalStyle,
     Wrapper,
@@ -20,27 +19,15 @@ import ThemeBar from '../Theme';
 import SettingBar from '../SettingBar';
 import AudioAlert from '../AudioAlert';
 import {useTypedParams} from '../../hooks/useTypedParams';
-
-function validParams({themeKey, algorithmKey, speedKey, audioIsEnabledKey}: Params): boolean {
-    return (
-        algorithms[algorithmKey] &&
-        ThemeKeys.includes(themeKey) &&
-        validSpeedKey(speedKey) &&
-        AudioIsEnabledKey.includes(audioIsEnabledKey)
-    );
-}
-
-function validSpeedKey(speedKey: string): boolean {
-    return SpeedValue[parseInt(speedKey)] !== undefined;
-}
+import {speedValue} from './constants';
 
 export type AudioButtonElement = HTMLAnchorElement | null;
 export const AudioButtonContext = createContext<AudioButtonElement>(null);
 
 const Algorithms: FunctionComponent = () => {
-    const params = useTypedParams();
-    const {themeKey, algorithmKey, speedKey, audioIsEnabledKey} = params;
-    const navigate = useNavigate();
+    // useTypedParams guarantees every param is valid (it coerces to a default
+    // otherwise), so the route always resolves to a real algorithm — no guard needed.
+    const {themeKey, algorithmKey, speedKey, audioIsEnabledKey} = useTypedParams();
     const [theme, applyTheme] = useState<Theme>(defaultTheme);
     const [shuffle, triggerShuffle] = useState<number>(0);
     const [firstShowAudioAlert, setFirstShowAudioAlert] = useState<boolean>(
@@ -48,58 +35,38 @@ const Algorithms: FunctionComponent = () => {
     );
     const [audioButton, setAudioButton] = useState<AudioButtonElement>(null);
 
-    useEffect(() => {
-        if (!validParams(params)) navigate('/');
-    }, [params, navigate]);
-
-    if (validParams(params)) {
-        const {name, code, executor} = algorithms[algorithmKey];
-        return (
-            <AudioButtonContext.Provider value={audioButton}>
-                <CanvasTarget
-                    {...{theme, speed: SpeedValue[parseInt(speedKey)], executor, shuffle}}
-                />
-                <Head1 {...theme}>algoRYTHM</Head1>
-                <Wrapper {...{firstShowAudioAlert}}>
-                    <AlgorithmsWrapper>
-                        <GlobalStyle {...theme} />
-                        <CodeAreaWrapper>
-                            <Head2 {...theme}>
+    const {name, code, executor} = algorithms[algorithmKey];
+    return (
+        <AudioButtonContext.Provider value={audioButton}>
+            <CanvasTarget {...{theme, speed: speedValue[speedKey], executor, shuffle}} />
+            <Head1 {...theme}>algoRYTHM</Head1>
+            <Wrapper {...{firstShowAudioAlert}}>
+                <AlgorithmsWrapper>
+                    <GlobalStyle {...theme} />
+                    <CodeAreaWrapper>
+                        <Head2 {...theme}>
+                            {' '}
+                            {name}
+                            <sup>
                                 {' '}
-                                {name}
-                                <sup>
-                                    {' '}
-                                    with <span>{themeKey}</span>
-                                </sup>
-                            </Head2>
-                            <CodeArea {...{themeKey, code, applyTheme}} />
-                        </CodeAreaWrapper>
-                        <MenuWrapper>
-                            <Menu {...theme} />
-                            <SettingBar {...{theme, triggerShuffle, setAudioButton}} />
-                        </MenuWrapper>
-                        <ThemeBarWrapper>
-                            <ThemeBar {...theme} />
-                        </ThemeBarWrapper>
-                    </AlgorithmsWrapper>
-                    <Footer {...theme} />
-                </Wrapper>
-                {firstShowAudioAlert && <AudioAlert {...{theme, setFirstShowAudioAlert}} />}
-            </AudioButtonContext.Provider>
-        );
-    }
-    return null;
+                                with <span>{themeKey}</span>
+                            </sup>
+                        </Head2>
+                        <CodeArea {...{themeKey, code, applyTheme}} />
+                    </CodeAreaWrapper>
+                    <MenuWrapper>
+                        <Menu {...theme} />
+                        <SettingBar {...{theme, triggerShuffle, setAudioButton}} />
+                    </MenuWrapper>
+                    <ThemeBarWrapper>
+                        <ThemeBar {...theme} />
+                    </ThemeBarWrapper>
+                </AlgorithmsWrapper>
+                <Footer {...theme} />
+            </Wrapper>
+            {firstShowAudioAlert && <AudioAlert {...{theme, setFirstShowAudioAlert}} />}
+        </AudioButtonContext.Provider>
+    );
 };
 
 export default Algorithms;
-
-export const SpeedKey = ['2', '1', '0'] as const;
-const SpeedValue = [1000, 100, 10] as const;
-const AudioIsEnabledKey = ['1', '0'] as const;
-
-export interface Params {
-    themeKey: ThemeKey;
-    algorithmKey: AlgorithmKey;
-    speedKey: (typeof SpeedKey)[number];
-    audioIsEnabledKey: (typeof AudioIsEnabledKey)[number];
-}
