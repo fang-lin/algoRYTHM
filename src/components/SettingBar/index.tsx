@@ -1,11 +1,11 @@
-import {Dispatch, FunctionComponent, SetStateAction} from 'react';
+import {Dispatch, FunctionComponent, SetStateAction, useContext} from 'react';
 import Rabbit from '../../icons/rabbit.svg?react';
 import Turtle from '../../icons/turtle.svg?react';
 import Bear from '../../icons/bear.svg?react';
 import {Raw, Item, OperationBarWrapper} from './styles';
 import {getRandomThemeKey, Theme} from '../Theme';
 import {NavLink} from 'react-router-dom';
-import {AudioButtonElement} from '../Algorithms';
+import {AudioUnlockContext} from '../Algorithms';
 import {useTypedParams} from '../../hooks/useTypedParams';
 import Shuffle from '../../icons/shuffle.svg?react';
 import MusicOff from '../../icons/music-off.svg?react';
@@ -17,11 +17,11 @@ import {SpeedKey} from '../Algorithms/constants';
 interface SpeedBarProps {
     theme: Theme;
     triggerShuffle: Dispatch<SetStateAction<number>>;
-    setAudioButton: Dispatch<SetStateAction<AudioButtonElement>>;
 }
 
-const SettingBar: FunctionComponent<SpeedBarProps> = ({theme, triggerShuffle, setAudioButton}) => {
+const SettingBar: FunctionComponent<SpeedBarProps> = ({theme, triggerShuffle}) => {
     const params = useTypedParams();
+    const audioUnlock = useContext(AudioUnlockContext);
     const audioIsEnabledKey = toggleAudioKey(params.audioIsEnabledKey);
 
     return (
@@ -41,7 +41,7 @@ const SettingBar: FunctionComponent<SpeedBarProps> = ({theme, triggerShuffle, se
             <Raw>
                 <Item {...theme}>
                     <NavLink
-                        ref={setAudioButton}
+                        onClick={() => audioUnlock?.()}
                         to={paramsToLink({
                             ...params,
                             audioIsEnabledKey,

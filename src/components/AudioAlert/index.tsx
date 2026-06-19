@@ -2,7 +2,7 @@ import {Dispatch, FunctionComponent, SetStateAction, useContext} from 'react';
 import {getRandomThemeKey, Theme} from '../Theme';
 import {AudioAlterButton, AudioAlertBackground, CoinTossButton, Head3} from './styles';
 import {useNavigate, NavLink} from 'react-router-dom';
-import {AudioButtonContext} from '../Algorithms';
+import {AudioUnlockContext} from '../Algorithms';
 import {useTypedParams} from '../../hooks/useTypedParams';
 import Music from '../../icons/music.svg?react';
 import CoinToss from '../../icons/coin-toss.svg?react';
@@ -13,24 +13,17 @@ interface AudioAlertProps {
     setFirstShowAudioAlert: Dispatch<SetStateAction<boolean>>;
 }
 
-// One-shot handler that cancels the music-toggle link's navigation (see PLAY onClick).
-const suppressNavigation = (event: Event) => event.preventDefault();
-
 const AudioAlert: FunctionComponent<AudioAlertProps> = ({theme, setFirstShowAudioAlert}) => {
     const params = useTypedParams();
     const navigate = useNavigate();
-    const audioButton = useContext(AudioButtonContext);
-    return audioButton ? (
+    const audioUnlock = useContext(AudioUnlockContext);
+    return audioUnlock ? (
         <AudioAlertBackground {...theme}>
             <AudioAlterButton
                 onClick={() => {
-                    // Clicking the music-toggle link fires the oscillator start()
-                    // listeners (the audio unlock gesture). Suppress the link's own
-                    // navigation (react-router's Link skips it when defaultPrevented)
-                    // so we don't bounce through the audio-OFF URL; we navigate to
-                    // the audio-ON URL ourselves, exactly once.
-                    audioButton.addEventListener('click', suppressNavigation, {once: true});
-                    audioButton.click();
+                    // PLAY is a user gesture, so unlock the audio directly, then go to
+                    // the audio-ON URL and dismiss the overlay.
+                    audioUnlock();
                     navigate(
                         paramsToLink({
                             ...params,

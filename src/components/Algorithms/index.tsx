@@ -22,8 +22,8 @@ import {useTypedParams} from '../../hooks/useTypedParams';
 import {speedValue} from './constants';
 import {audioOn} from '../../functions';
 
-export type AudioButtonElement = HTMLAnchorElement | null;
-export const AudioButtonContext = createContext<AudioButtonElement>(null);
+export type AudioUnlock = (() => void) | null;
+export const AudioUnlockContext = createContext<AudioUnlock>(null);
 
 const Algorithms: FunctionComponent = () => {
     // useTypedParams guarantees every param is valid (it coerces to a default
@@ -34,12 +34,14 @@ const Algorithms: FunctionComponent = () => {
     const [firstShowAudioAlert, setFirstShowAudioAlert] = useState<boolean>(
         audioOn(audioIsEnabledKey)
     );
-    const [audioButton, setAudioButton] = useState<AudioButtonElement>(null);
+    const [audioUnlock, setAudioUnlock] = useState<AudioUnlock>(null);
 
     const {name, code, executor} = algorithms[algorithmKey];
     return (
-        <AudioButtonContext.Provider value={audioButton}>
-            <CanvasTarget {...{theme, speed: speedValue[speedKey], executor, shuffle}} />
+        <AudioUnlockContext.Provider value={audioUnlock}>
+            <CanvasTarget
+                {...{theme, speed: speedValue[speedKey], executor, shuffle, setAudioUnlock}}
+            />
             <Head1 {...theme}>algoRYTHM</Head1>
             <Wrapper {...{firstShowAudioAlert}}>
                 <AlgorithmsWrapper>
@@ -57,7 +59,7 @@ const Algorithms: FunctionComponent = () => {
                     </CodeAreaWrapper>
                     <MenuWrapper>
                         <Menu {...theme} />
-                        <SettingBar {...{theme, triggerShuffle, setAudioButton}} />
+                        <SettingBar {...{theme, triggerShuffle}} />
                     </MenuWrapper>
                     <ThemeBarWrapper>
                         <ThemeBar {...theme} />
@@ -66,7 +68,7 @@ const Algorithms: FunctionComponent = () => {
                 <Footer {...theme} />
             </Wrapper>
             {firstShowAudioAlert && <AudioAlert {...{theme, setFirstShowAudioAlert}} />}
-        </AudioButtonContext.Provider>
+        </AudioUnlockContext.Provider>
     );
 };
 

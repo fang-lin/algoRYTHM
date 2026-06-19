@@ -135,8 +135,9 @@ export class AnimationPlayer {
 class GainedOscillator {
     public oscillator: OscillatorNode;
     public readonly gain: GainNode;
+    private started = false;
 
-    constructor(type: OscillatorType, audioContext: AudioContext, audioButton: HTMLAnchorElement) {
+    constructor(type: OscillatorType, audioContext: AudioContext) {
         this.oscillator = audioContext.createOscillator();
         this.gain = audioContext.createGain();
 
@@ -144,13 +145,13 @@ class GainedOscillator {
         this.gain.connect(audioContext.destination);
         this.oscillator.connect(this.gain);
         this.gain.gain.setValueAtTime(0.0000001, audioContext.currentTime);
-        audioButton.addEventListener(
-            'click',
-            () => {
-                this.oscillator.start();
-            },
-            {once: true}
-        );
+    }
+
+    start(): void {
+        if (!this.started) {
+            this.started = true;
+            this.oscillator.start();
+        }
     }
 }
 
@@ -161,16 +162,25 @@ export class AudioPlayer {
     private readonly swapGainedOscillators: [GainedOscillator, GainedOscillator];
     private readonly comparingGainedOscillators: [GainedOscillator, GainedOscillator];
 
-    constructor(audioButton: HTMLAnchorElement) {
+    constructor() {
         this.audioContext = new AudioContext();
         this.swapGainedOscillators = [
-            new GainedOscillator('square', this.audioContext, audioButton),
-            new GainedOscillator('square', this.audioContext, audioButton),
+            new GainedOscillator('square', this.audioContext),
+            new GainedOscillator('square', this.audioContext),
         ];
         this.comparingGainedOscillators = [
-            new GainedOscillator('sine', this.audioContext, audioButton),
-            new GainedOscillator('sine', this.audioContext, audioButton),
+            new GainedOscillator('sine', this.audioContext),
+            new GainedOscillator('sine', this.audioContext),
         ];
+    }
+
+    // Must run inside a user gesture (autoplay policy): resume the context and start
+    // every oscillator. Idempotent — safe to call on every PLAY / music-toggle click.
+    unlock(): void {
+        if (this.audioContext.state === 'suspended') {
+            this.audioContext.resume();
+        }
+        [...this.swapGainedOscillators, ...this.comparingGainedOscillators].forEach(o => o.start());
     }
 
     dispose(): void {
