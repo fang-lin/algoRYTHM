@@ -1,33 +1,28 @@
-import {Dispatch, FunctionComponent, SetStateAction, useEffect, useRef} from 'react';
+import {Dispatch, FunctionComponent, SetStateAction, useContext} from 'react';
 import Rabbit from '../../icons/rabbit.svg?react';
 import Turtle from '../../icons/turtle.svg?react';
 import Bear from '../../icons/bear.svg?react';
 import {Raw, Item, OperationBarWrapper} from './styles';
 import {getRandomThemeKey, Theme} from '../Theme';
 import {NavLink} from 'react-router-dom';
-import {AudioButtonElement} from '../Algorithms';
+import {AudioUnlockContext} from '../Algorithms';
 import {useTypedParams} from '../../hooks/useTypedParams';
 import Shuffle from '../../icons/shuffle.svg?react';
 import MusicOff from '../../icons/music-off.svg?react';
 import MusicOn from '../../icons/music-on.svg?react';
 import Palette from '../../icons/palette.svg?react';
-import {paramsToLink} from '../../functions';
-import {SpeedKey} from '../Algorithms';
+import {audioOn, paramsToLink, toggleAudioKey} from '../../functions';
+import {SpeedKey} from '../Algorithms/constants';
 
 interface SpeedBarProps {
     theme: Theme;
     triggerShuffle: Dispatch<SetStateAction<number>>;
-    setAudioButton: Dispatch<SetStateAction<AudioButtonElement>>;
 }
 
-const SettingBar: FunctionComponent<SpeedBarProps> = ({theme, triggerShuffle, setAudioButton}) => {
+const SettingBar: FunctionComponent<SpeedBarProps> = ({theme, triggerShuffle}) => {
     const params = useTypedParams();
-    const audioButton = useRef<HTMLAnchorElement>(null);
-    const audioIsEnabledKey = params.audioIsEnabledKey === '1' ? '0' : '1';
-
-    useEffect(() => {
-        setAudioButton(audioButton.current);
-    }, [setAudioButton]);
+    const audioUnlock = useContext(AudioUnlockContext);
+    const audioIsEnabledKey = toggleAudioKey(params.audioIsEnabledKey);
 
     return (
         <OperationBarWrapper>
@@ -46,13 +41,13 @@ const SettingBar: FunctionComponent<SpeedBarProps> = ({theme, triggerShuffle, se
             <Raw>
                 <Item {...theme}>
                     <NavLink
-                        ref={audioButton}
+                        onClick={() => audioUnlock?.()}
                         to={paramsToLink({
                             ...params,
                             audioIsEnabledKey,
                         })}
                     >
-                        {params.audioIsEnabledKey === '1' ? <MusicOff /> : <MusicOn />}
+                        {audioOn(params.audioIsEnabledKey) ? <MusicOff /> : <MusicOn />}
                     </NavLink>
                 </Item>
                 <Item onClick={({timeStamp}) => triggerShuffle(timeStamp)} {...theme}>

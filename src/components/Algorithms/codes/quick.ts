@@ -1,4 +1,4 @@
-import {Executor} from './index';
+import {Executor, swap} from './index';
 
 export const name = 'Quick';
 
@@ -41,7 +41,7 @@ function quickSort(list: Array<number>, left: number, right: number): void {
 
 export const executor: Executor = (list, collector) => {
     function quickSort(list: Array<number>, left = 0, right = list.length - 1): void {
-        let pivot, i, j, tmp;
+        let pivot, i, j;
 
         if (left < right) {
             i = left;
@@ -61,15 +61,11 @@ export const executor: Executor = (list, collector) => {
 
                 if (i < j) {
                     collector({list, swap: [i, j]});
-                    tmp = list[i];
-                    list[i] = list[j];
-                    list[j] = tmp;
+                    swap(list, i, j);
                 }
             } while (i < j);
 
-            tmp = list[left];
-            list[left] = list[j];
-            list[j] = tmp;
+            swap(list, left, j);
             collector({list, swap: [left, j]});
 
             quickSort(list, left, j - 1);

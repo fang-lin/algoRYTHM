@@ -42,6 +42,10 @@ export const AudioAlterButton = styled.h2<Theme>`
         width: 64px;
         height: 64px;
         fill: ${({keywordColor}) => keywordColor};
+
+        [fill] {
+            fill: ${({keywordColor}) => keywordColor};
+        }
     }
 `;
 
@@ -72,6 +76,10 @@ export const CoinTossButton = styled.h3<Theme>`
             width: 32px;
             height: 32px;
             fill: ${({keywordColor}) => keywordColor};
+
+            [fill] {
+                fill: ${({keywordColor}) => keywordColor};
+            }
         }
     }
 `;
