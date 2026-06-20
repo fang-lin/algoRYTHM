@@ -16,7 +16,7 @@ function collectFrames(disorderedList: Array<number>, executor: Executor): Array
 
 export class AnimationPlayer {
     public speed = 100;
-    private audioPlayer: AudioPlayer;
+    public readonly audioPlayer: AudioPlayer;
     private _frames: Array<Frame> = [];
     private context: CanvasRenderingContext2D;
     private playId = NaN;
@@ -156,7 +156,7 @@ class GainedOscillator {
 }
 
 export class AudioPlayer {
-    public isEnabled = false;
+    private _isEnabled = false;
     private readonly audioContext: AudioContext;
 
     private readonly swapGainedOscillators: [GainedOscillator, GainedOscillator];
@@ -172,6 +172,23 @@ export class AudioPlayer {
             new GainedOscillator('sine', this.audioContext),
             new GainedOscillator('sine', this.audioContext),
         ];
+    }
+
+    get isEnabled(): boolean {
+        return this._isEnabled;
+    }
+
+    // Silence once when audio is turned off, instead of re-muting every frame in fresh().
+    set isEnabled(value: boolean) {
+        if (this._isEnabled === value) return;
+        this._isEnabled = value;
+        if (!value) {
+            const now = this.audioContext.currentTime;
+            [...this.swapGainedOscillators, ...this.comparingGainedOscillators].forEach(o => {
+                o.gain.gain.cancelScheduledValues(now);
+                o.gain.gain.setValueAtTime(0.0000001, now);
+            });
+        }
     }
 
     // Must run inside a user gesture (autoplay policy): resume the context and start
@@ -192,35 +209,27 @@ export class AudioPlayer {
     }
 
     fresh(frame: Frame, duration: number, barCount: number): void {
-        if (this.isEnabled) {
-            const timeSlice = duration < 100 ? 0.1 : 0.6;
-            if (frame.swap) {
-                frame.swap.forEach((swap, index) =>
-                    this.beep(
-                        this.swapGainedOscillators[index],
-                        AudioPlayer.frequency(swap, barCount),
-                        index * timeSlice,
-                        (index + 1) * timeSlice,
-                        0.1
-                    )
-                );
-            } else if (frame.comparing) {
-                frame.comparing.forEach((comparing, index) =>
-                    this.beep(
-                        this.comparingGainedOscillators[index],
-                        AudioPlayer.frequency(comparing, barCount),
-                        index * timeSlice,
-                        (index + 1) * timeSlice,
-                        0.03
-                    )
-                );
-            }
-        } else {
-            this.swapGainedOscillators.forEach(o =>
-                o.gain.gain.setValueAtTime(0.0000001, this.audioContext.currentTime)
+        if (!this._isEnabled) return;
+        const timeSlice = duration < 100 ? 0.1 : 0.6;
+        if (frame.swap) {
+            frame.swap.forEach((swap, index) =>
+                this.beep(
+                    this.swapGainedOscillators[index],
+                    AudioPlayer.frequency(swap, barCount),
+                    index * timeSlice,
+                    (index + 1) * timeSlice,
+                    0.1
+                )
             );
-            this.comparingGainedOscillators.forEach(o =>
-                o.gain.gain.setValueAtTime(0.0000001, this.audioContext.currentTime)
+        } else if (frame.comparing) {
+            frame.comparing.forEach((comparing, index) =>
+                this.beep(
+                    this.comparingGainedOscillators[index],
+                    AudioPlayer.frequency(comparing, barCount),
+                    index * timeSlice,
+                    (index + 1) * timeSlice,
+                    0.03
+                )
             );
         }
     }

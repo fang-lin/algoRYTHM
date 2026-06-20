@@ -28,7 +28,8 @@ const AudioAlert: FunctionComponent<AudioAlertProps> = ({theme, setFirstShowAudi
                         paramsToLink({
                             ...params,
                             audioIsEnabledKey: '1',
-                        })
+                        }),
+                        {replace: true}
                     );
                     setFirstShowAudioAlert(false);
                 }}

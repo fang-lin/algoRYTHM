@@ -21,7 +21,7 @@ import AudioAlert from '../AudioAlert';
 import {useNavigate} from 'react-router-dom';
 import {useTypedParams} from '../../hooks/useTypedParams';
 import {speedValue} from './constants';
-import {paramsToLink} from '../../functions';
+import {audioOn, paramsToLink} from '../../functions';
 
 export type AudioUnlock = (() => void) | null;
 export const AudioUnlockContext = createContext<AudioUnlock>(null);
@@ -50,7 +50,7 @@ const Algorithms: FunctionComponent = () => {
     useEffect(() => {
         if (!audioRedirectedThisLoad) {
             audioRedirectedThisLoad = true;
-            if (audioIsEnabledKey === '0') {
+            if (!audioOn(audioIsEnabledKey)) {
                 navigate(paramsToLink({...params, audioIsEnabledKey: '1'}), {replace: true});
             }
         }

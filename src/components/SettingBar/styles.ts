@@ -23,18 +23,12 @@ export const Item = styled.div<Theme>`
         padding: 10px;
         background: none;
         font: inherit;
+        color: ${({keywordColor}) => keywordColor};
 
         svg {
             display: block;
             width: 32px;
             height: 32px;
-            fill: ${({keywordColor}) => keywordColor};
-
-            /* The icons hardcode fill="#000000" on an inner <g>; override it so they
-               follow the theme (same color as the menu text). */
-            [fill] {
-                fill: ${({keywordColor}) => keywordColor};
-            }
         }
 
         &.active {

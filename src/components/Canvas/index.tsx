@@ -29,7 +29,6 @@ const Canvas: FunctionComponent<CanvasProps> = ({
     // players are created in this mount effect. A ref would not re-trigger them —
     // keep the players in the effect deps.
     const [animationPlayer, setAnimationPlayer] = useState<AnimationPlayer>();
-    const [audioPlayer, setAudioPlayer] = useState<AudioPlayer>();
 
     useEffect(() => {
         let createdAnimationPlayer: AnimationPlayer | undefined;
@@ -45,7 +44,6 @@ const Canvas: FunctionComponent<CanvasProps> = ({
                 createdAnimationPlayer.size = [width * deviceRatio, height * deviceRatio];
 
                 setAnimationPlayer(createdAnimationPlayer);
-                setAudioPlayer(createdAudioPlayer);
 
                 // Expose unlock() so PLAY / the music toggle can start audio from a
                 // user gesture. Double arrow so useState stores the fn, not its result.
@@ -85,10 +83,10 @@ const Canvas: FunctionComponent<CanvasProps> = ({
     }, [animationPlayer, shuffle]);
 
     useEffect(() => {
-        if (audioPlayer) {
-            audioPlayer.isEnabled = audioOn(audioIsEnabledKey);
+        if (animationPlayer) {
+            animationPlayer.audioPlayer.isEnabled = audioOn(audioIsEnabledKey);
         }
-    }, [audioPlayer, audioIsEnabledKey]);
+    }, [animationPlayer, audioIsEnabledKey]);
 
     return (
         <CanvasWrapper>
